@@ -24,3 +24,9 @@ hs_err_pid*
 
 # IDE Config settings
 .idea
+
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
