@@ -47,5 +47,5 @@ production:
     - echo "Deploying to production"
     - dpl --provider=heroku --app=$HEROKU_APP_PRODUCTION --api-key=$HEROKU_API_KEY
     - echo "Deployment to production succeeded"
-    only:
+  only:
     - main
