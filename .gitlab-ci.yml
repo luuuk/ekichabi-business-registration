@@ -6,14 +6,12 @@ before_script:
 stages:
   - build
   - test
-  - deploy-staging
-  - deploy-production
+  - deploy
 
 build-job:
   stage: build
   script:
     - echo "Compiling the code..."
-    -
     - echo "Compile complete."
 
 unit-test-job:
@@ -31,7 +29,7 @@ lint-test-job:
     - echo "No lint issues found."
 
 deploy-staging:
-  stage: staging
+  stage: deploy
   image: ruby:latest
   script:
     - echo "Deploying to staging"
@@ -41,7 +39,7 @@ deploy-staging:
     - staging
 
 production:
-  stage: production
+  stage: deploy
   image: ruby:latest
   script:
     - echo "Deploying to production"
