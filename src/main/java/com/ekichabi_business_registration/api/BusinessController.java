@@ -25,7 +25,7 @@ public class BusinessController {
 
     @GetMapping
     public ResponseEntity<List<BusinessEntity>> findAll() {
-        logger.info("Calling FindAllBusinesses");
+        logger.info("Calling FindAllBusinesses()");
         List<BusinessEntity> businessEntities = service.findAllBusinesses();
         return ResponseEntity.ok().body(businessEntities);
     }
