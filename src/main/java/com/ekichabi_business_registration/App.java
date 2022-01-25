@@ -18,11 +18,6 @@ public class App {
 
     @Bean
     ApplicationRunner init(BusinessRepository businessRepository) {
-        BusinessEntity[] entities = {
-                new BusinessEntity("Business1")
-        };
-        businessRepository.saveAll(Arrays.asList(entities));
-
         return args -> businessRepository.findAll().forEach(System.out::println);
     }
 }
