@@ -19,7 +19,6 @@ import java.util.Objects;
 @ToString
 @Entity
 @Table(name = "BUSINESS")
-@RequiredArgsConstructor
 public class BusinessEntity {
 
     @Id
@@ -28,10 +27,11 @@ public class BusinessEntity {
 
     private String name;
 
-
     public BusinessEntity(String name){
         this.name = name;
     }
+
+    protected BusinessEntity() {}
 
     @Override
     public boolean equals(Object o) {
