@@ -31,6 +31,14 @@ task stage(type: Copy, dependsOn: [clean, build]) {
 }
 stage.mustRunAfter(clean)
 
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'com.ekichabi_business_registration.App'
+        )
+    }
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
