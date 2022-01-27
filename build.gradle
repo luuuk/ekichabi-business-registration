@@ -22,22 +22,8 @@ dependencies {
     implementation 'org.flywaydb:flyway-core:8.4.2'
 }
 
-task stage(type: Copy, dependsOn: [clean, build]) {
-    from jar.archiveFile
-    into project.rootDir
-    rename {
-        'app.jar'
-    }
-}
-stage.mustRunAfter(clean)
-
-jar {
-    manifest {
-        attributes(
-                'Main-Class': 'com.ekichabi_business_registration.App'
-        )
-    }
-}
+task stage(dependsOn: ['build', 'clean'])
+build.mustRunAfter clean
 
 tasks.named('test') {
 	useJUnitPlatform()
