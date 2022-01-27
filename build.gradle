@@ -22,6 +22,15 @@ dependencies {
     implementation 'org.flywaydb:flyway-core:8.4.2'
 }
 
+task stage(type: Copy, dependsOn: [clean, build]) {
+    from jar.archiveFile
+    into project.rootDir
+    rename {
+        'app.jar'
+    }
+}
+stage.mustRunAfter(clean)
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
