@@ -13,6 +13,11 @@ repositories {
     mavenCentral()
 }
 
+jar {
+    baseName = 'app'
+    version = '0.0.1'
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.2'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.6.2'
