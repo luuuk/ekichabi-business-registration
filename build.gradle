@@ -22,19 +22,6 @@ dependencies {
     implementation 'org.flywaydb:flyway-core:8.4.2'
 }
 
-task stage(type: Copy, dependsOn: ['build', 'clean']) {
-    from "build/libs/ekichabi-business-registration-0.0.1-SNAPSHOT.jar"
-    into project.rootDir
-    rename {
-        'app.jar'
-    }
-}
-stage.mustRunAfter(clean)
-
-clean {
-    doLast { project.file('app.jar').delete() }
-}
-
 tasks.named('test') {
     useJUnitPlatform()
 }
