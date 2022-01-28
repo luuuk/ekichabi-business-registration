@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
-@PropertySource("classpath:application-${spring.profiles.active:default}.properties")
+//@PropertySource("classpath:application-${spring.profiles.active:default}.properties")
 public class App {
 
 	public static void main(String[] args) {
