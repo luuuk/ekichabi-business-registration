@@ -17,6 +17,7 @@ public class App {
 
     @Bean
     ApplicationRunner init(BusinessRepository businessRepository) {
+//	    TODO: This should be a transaction
         return args -> businessRepository.findAll().forEach(System.out::println);
     }
 }
