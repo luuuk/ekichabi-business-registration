@@ -17,4 +17,7 @@ public class BusinessService {
         return (List<BusinessEntity>) repository.findAll();
     }
 
+    public BusinessEntity createBusiness(BusinessEntity businessEntity){
+        return repository.save(businessEntity);
+    }
 }
