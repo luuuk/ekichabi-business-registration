@@ -22,9 +22,9 @@ jobs:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_DB: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
+          POSTGRES_DB: ekichabi
+          POSTGRES_PASSWORD: ekichabi
+          POSTGRES_USER: ekichabi
         ports:
           - 5432:5432
         # Set health checks to wait until postgres has started
