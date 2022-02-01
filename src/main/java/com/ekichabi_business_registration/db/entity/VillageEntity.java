@@ -1,9 +1,7 @@
 package com.ekichabi_business_registration.db.entity;
 
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -12,19 +10,25 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@ToString(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "VILLAGE")
 public class VillageEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @ToString.Include
     private Integer id;
 
+    @ToString.Include
     private String name;
 
     @ManyToOne
     @JoinColumn(name = "DISTRICT_ID", referencedColumnName = "ID")
+    @ToString.Include
     private DistrictEntity district;
 
     @Override

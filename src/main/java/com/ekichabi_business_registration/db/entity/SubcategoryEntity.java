@@ -1,8 +1,6 @@
 package com.ekichabi_business_registration.db.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -10,10 +8,13 @@ import java.util.Objects;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @ToString
 @Entity
 @Table(name = "SUBCATEGORY")
-class SubcategoryEntity {
+public class SubcategoryEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;

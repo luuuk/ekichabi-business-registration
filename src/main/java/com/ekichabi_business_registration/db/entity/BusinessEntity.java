@@ -9,8 +9,11 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@Entity
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @ToString(onlyExplicitlyIncluded = true)
+@Entity
 @Table(name = "BUSINESS")
 public class BusinessEntity {
 
@@ -30,17 +33,12 @@ public class BusinessEntity {
     @JoinTable(name="BUSINESS_TO_SUBCATEGORY",
             joinColumns = @JoinColumn(name = "BUSINESS_ID", referencedColumnName = "ID"),
             inverseJoinColumns = @JoinColumn(name = "SUBCATEGORY_ID", referencedColumnName = "ID"))
-    private List<SubcategoryEntity> subcategory;
+    @Singular
+    private List<SubcategoryEntity> subcategories;
 
     @ManyToOne
     @JoinColumn(name = "SUBVILLAGE_ID")
     private SubvillageEntity subvillage;
-
-    public BusinessEntity(String name){
-        this.name = name;
-    }
-
-    protected BusinessEntity() {}
 
     @Override
     public boolean equals(Object o) {
