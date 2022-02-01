@@ -24,6 +24,7 @@ public class VillageEntity {
     private String name;
 
     @ManyToOne
+    @JoinColumn(name = "DISTRICT_ID", referencedColumnName = "ID")
     private DistrictEntity district;
 
     @Override

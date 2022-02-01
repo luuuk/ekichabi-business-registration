@@ -6,6 +6,7 @@ import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Objects;
 
 @Getter
@@ -36,4 +37,7 @@ public class DistrictEntity {
     public int hashCode() {
         return getClass().hashCode();
     }
+
+    @OneToMany(mappedBy = "district")
+    private Collection<VillageEntity> village;
 }

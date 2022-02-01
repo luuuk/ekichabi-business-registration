@@ -9,31 +9,31 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
 @Entity
+@ToString(onlyExplicitlyIncluded = true)
 @Table(name = "BUSINESS")
 public class BusinessEntity {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
+    @ToString.Include
     private Long id;
 
+    @ToString.Include
     private String name;
 
     @ManyToOne
+    @JoinColumn(name = "CATEGORY_ID", referencedColumnName = "ID")
     private CategoryEntity category;
 
     @ManyToMany
-    @JoinTable(name="BUSINESS_TO_SUBCATEGORY")
+    @JoinTable(name="BUSINESS_TO_SUBCATEGORY",
+            joinColumns = @JoinColumn(name = "BUSINESS_ID", referencedColumnName = "ID"),
+            inverseJoinColumns = @JoinColumn(name = "SUBCATEGORY_ID", referencedColumnName = "ID"))
     private List<SubcategoryEntity> subcategory;
 
     @ManyToOne
-    private DistrictEntity district;
-
-    @ManyToOne
-    private VillageEntity village;
-
-    @ManyToOne
+    @JoinColumn(name = "SUBVILLAGE_ID")
     private SubvillageEntity subvillage;
 
     public BusinessEntity(String name){
@@ -60,5 +60,4 @@ public class BusinessEntity {
         return getClass().hashCode();
     }
 
-    // TODO add fields as defined in data model
 }

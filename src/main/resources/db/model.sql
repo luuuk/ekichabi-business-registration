@@ -7,10 +7,8 @@ CREATE TABLE business
         CONSTRAINT business_pk
             PRIMARY KEY,
     name       TEXT,
-    category   INT REFERENCES category,
-    district   INT REFERENCES district,
-    village    INT REFERENCES village,
-    subvillage INT REFERENCES subvillage
+    category_id   INT REFERENCES category,
+    subvillage_id INT REFERENCES subvillage
 );
 
 CREATE TABLE category
@@ -26,17 +24,17 @@ CREATE TABLE subcategory
     id       SERIAL
         CONSTRAINT subcategory_pk PRIMARY KEY,
     name     TEXT,
-    category INT NOT NULL
+    category_id INT NOT NULL
         CONSTRAINT subcategory_category_fk REFERENCES category
 );
 
 CREATE TABLE business_to_subcategory
 (
-    business    BIGINT REFERENCES business (id),
-    subcategory INT REFERENCES subcategory (id),
+    business_id    BIGINT REFERENCES business (id),
+    subcategory_id INT REFERENCES subcategory (id),
 
     CONSTRAINT business_to_subcategory_pk
-        PRIMARY KEY (business, subcategory)
+        PRIMARY KEY (business_id, subcategory_id)
 );
 
 CREATE TABLE district
@@ -52,7 +50,7 @@ CREATE TABLE village
         CONSTRAINT village_pk
             PRIMARY KEY,
     name     TEXT,
-    district INT    NOT NULL
+    district_id INT    NOT NULL
         CONSTRAINT village_district_fk
             REFERENCES district (id)
 );
@@ -63,7 +61,7 @@ CREATE TABLE subvillage
         CONSTRAINT subvillage_pk
             PRIMARY KEY,
     name    TEXT,
-    village INT    NOT NULL
+    village_id INT    NOT NULL
         CONSTRAINT subvillage_village_fk
             REFERENCES village (id)
 );

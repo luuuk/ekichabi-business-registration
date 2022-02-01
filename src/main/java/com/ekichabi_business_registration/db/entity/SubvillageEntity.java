@@ -12,7 +12,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @Entity
-@Table(name = "DISTRICT")
+@Table(name = "SUBVILLAGE")
 public class SubvillageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
