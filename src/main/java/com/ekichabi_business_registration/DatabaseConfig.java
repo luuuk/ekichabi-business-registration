@@ -1,6 +1,7 @@
 package com.ekichabi_business_registration;
 
 import com.zaxxer.hikari.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import javax.sql.DataSource;
