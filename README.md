@@ -14,3 +14,9 @@ You have two options! You can
 2. Run via Heroku CLI
    1. First, build the project with `gradle build` - this generates the JAR file which Heroku will run
    2. Next, run `Heroku local -f Procfile.dev` - this directly mirrors the run config used by Heroku in production
+
+
+### How to Deploy
+- You can deploy the application directly to Heroku by pushing to Main.
+- PLEASE DONT THOUGH! 
+   - We love PRs here at ekichabi-business-registration. Run ya tests, get some eyes on ya code, and merge your feature branch into Main once ya get ya approval.
