@@ -8,11 +8,15 @@
 - Install Postgresql (`Brew install postgres`)
 - Start local postgres server (`Brew services start postgresql`)
 
-### Initialize DB
-- Run `flyway migrate -url=jdbc:postgresql://localhost:5432/ekichabi -user=ekichabi -password=ekichabi`
-
-### Clean DB
-- Run `flyway clean -url=jdbc:postgresql://localhost:5432/ekichabi -user=ekichabi -password=ekichabi`
-
 ### How to run locally
-- Run the Spring Boot app from CLI (`gradle bootrun`) or from Intellij
+You have two options! You can
+1. Run the Spring Boot app from CLI (`gradle bootrun`) or from Intellij
+2. Run via Heroku CLI
+   1. First, build the project with `gradle build` - this generates the JAR file which Heroku will run
+   2. Next, run `Heroku local -f Procfile.dev` - this directly mirrors the run config used by Heroku in production
+
+
+### How to Deploy
+- You can deploy the application directly to Heroku by pushing to Main.
+- PLEASE DONT THOUGH! 
+   - We love PRs here at ekichabi-business-registration. Run ya tests, get some eyes on ya code, and merge your feature branch into Main once ya get ya approval.

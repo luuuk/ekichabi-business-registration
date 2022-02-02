@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,18 +18,28 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/business")
 @CrossOrigin(origins = {}) // TODO update with origins we want to allow requests from
 @Transactional
 public class BusinessController {
     private final BusinessService service;
     private final Logger logger = LoggerFactory.getLogger(BusinessController.class);
 
-    @GetMapping
+    @GetMapping("businesses")
     public ResponseEntity<List<BusinessEntity>> findAll() {
         logger.info("Calling FindAllBusinesses()");
         List<BusinessEntity> businessEntities = service.findAllBusinesses();
         return ResponseEntity.ok().body(businessEntities);
+    }
+
+    @PostMapping("business")
+    public ResponseEntity<?> createBusiness(@RequestBody BusinessEntity businessEntity){
+        logger.info("Creating business " + businessEntity.toString());
+        try {
+            BusinessEntity created = service.createBusiness(businessEntity);
+            return ResponseEntity.ok().body(created);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Please pass a valid business in your request body");
+        }
     }
 
     // TODO implement remaining endpoints here

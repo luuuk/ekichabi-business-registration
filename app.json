@@ -1,8 +1,1 @@
-{
-  "name": "ekichabi-business-registration-app",
-  "buildpacks": [
-    {
-      "url": "heroku/gradle"
-    }
-  ]
-}
+{}
