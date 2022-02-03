@@ -1,5 +1,6 @@
 package com.ekichabi_business_registration.app;
 
+import com.ekichabi_business_registration.app.common.IntegrationTest;
 import com.ekichabi_business_registration.db.entity.*;
 import com.ekichabi_business_registration.db.repository.*;
 import lombok.NoArgsConstructor;
@@ -21,8 +22,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
-@NoArgsConstructor
+@IntegrationTest
 class BusinessRepositoryTests {
     @Autowired
     private BusinessRepository businessRepository;
