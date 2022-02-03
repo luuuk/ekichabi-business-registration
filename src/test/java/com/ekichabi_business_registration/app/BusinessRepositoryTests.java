@@ -1,21 +1,23 @@
 package com.ekichabi_business_registration.app;
 
 import com.ekichabi_business_registration.app.common.IntegrationTest;
-import com.ekichabi_business_registration.db.entity.*;
-import com.ekichabi_business_registration.db.repository.*;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.val;
-import org.hibernate.Hibernate;
+import com.ekichabi_business_registration.db.entity.BusinessEntity;
+import com.ekichabi_business_registration.db.entity.CategoryEntity;
+import com.ekichabi_business_registration.db.entity.DistrictEntity;
+import com.ekichabi_business_registration.db.entity.SubcategoryEntity;
+import com.ekichabi_business_registration.db.entity.SubvillageEntity;
+import com.ekichabi_business_registration.db.entity.VillageEntity;
+import com.ekichabi_business_registration.db.repository.BusinessRepository;
+import com.ekichabi_business_registration.db.repository.CategoryRepository;
+import com.ekichabi_business_registration.db.repository.DistrictRepository;
+import com.ekichabi_business_registration.db.repository.SubcategoryRepository;
+import com.ekichabi_business_registration.db.repository.SubvillageRepository;
+import com.ekichabi_business_registration.db.repository.VillageRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.aspectj.AbstractDependencyInjectionAspect;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
 
 import java.util.Optional;
 
