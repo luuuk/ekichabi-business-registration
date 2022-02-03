@@ -2,6 +2,7 @@ package com.ekichabi_business_registration.api;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import javax.swing.ImageIcon;
 @RequestMapping("")
 @CrossOrigin(origins = {}) // TODO update with origins we want to allow requests from
 @RequiredArgsConstructor
+@Transactional
 public class CommonController {
 
     @GetMapping("favicon.ico")

@@ -16,6 +16,6 @@ public class App {
 
     @Bean
     ApplicationRunner init(BusinessRepository businessRepository) {
-        return args -> businessRepository.findAll().forEach(System.out::println);
+        return args -> System.out.println("number of businesses: " + businessRepository.count());
     }
 }
