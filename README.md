@@ -19,4 +19,4 @@ You have two options! You can
 ### How to Deploy
 - You can deploy the application directly to Heroku by pushing to Main.
 - PLEASE DONT THOUGH! 
-   - We love PRs here at ekichabi-business-registration. Run ya tests, get some eyes on ya code, and merge your feature branch into Main once ya get ya approval.
+   - We love PRs here at ekichabi-business-registration. Run ya tests (Limitation: Tests are not run as a part of CI - please run them locally before opening a PR), get some eyes on ya code, and merge your feature branch into Main once ya get ya approval.
