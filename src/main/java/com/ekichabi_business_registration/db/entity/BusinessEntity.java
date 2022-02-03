@@ -40,6 +40,10 @@ public class BusinessEntity {
     @JoinColumn(name = "SUBVILLAGE_ID")
     private SubvillageEntity subvillage;
 
+    @ToString.Include
+    @Column(name = "COORDINATES")
+    private String coordinates;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
