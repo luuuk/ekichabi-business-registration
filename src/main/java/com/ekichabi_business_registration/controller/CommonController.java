@@ -1,4 +1,4 @@
-package com.ekichabi_business_registration.api;
+package com.ekichabi_business_registration.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
