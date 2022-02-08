@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Objects;
 
 @Getter
@@ -53,4 +54,7 @@ public class AccountEntity {
     public int hashCode() {
         return getClass().hashCode();
     }
+
+    @ManyToMany(mappedBy = "owners")
+    private Collection<BusinessEntity> ownedBusinesses;
 }
