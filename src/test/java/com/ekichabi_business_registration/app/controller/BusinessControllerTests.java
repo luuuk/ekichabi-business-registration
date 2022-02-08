@@ -21,6 +21,7 @@ public class BusinessControllerTests {
 
     @Test
     void findAllBusinesses_Success() {
+        // TODO add businesses to DB and verify inclusion in response body
         ResponseEntity<List<BusinessEntity>> responseEntity = businessController.findAll();
 
         assertEquals (responseEntity.getStatusCode(), HttpStatus.OK);
