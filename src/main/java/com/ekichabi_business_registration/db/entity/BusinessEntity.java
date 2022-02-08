@@ -55,6 +55,10 @@ public class BusinessEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    private AccountEntity owner;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
