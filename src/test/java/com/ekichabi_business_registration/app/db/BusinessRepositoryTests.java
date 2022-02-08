@@ -1,4 +1,4 @@
-package com.ekichabi_business_registration.app;
+package com.ekichabi_business_registration.app.db;
 
 import com.ekichabi_business_registration.app.common.IntegrationTest;
 import com.ekichabi_business_registration.db.entity.BusinessEntity;
