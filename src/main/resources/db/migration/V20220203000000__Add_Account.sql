@@ -9,5 +9,8 @@ CREATE TABLE account
 
 );
 
-ALTER TABLE business
-ADD COLUMN account_id BIGINT REFERENCES account(id);
+create TABLE business_account
+(
+    business_id BIGINT REFERENCES business (id),
+    account_id BIGINT REFERENCES account (id)
+);

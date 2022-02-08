@@ -55,9 +55,12 @@ public class BusinessEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "account_id")
-    private AccountEntity owner;
+    @ManyToMany
+    @JoinTable(name="BUSINESS_ACCOUNT",
+            joinColumns = @JoinColumn(name = "BUSINESS_ID", referencedColumnName = "ID"),
+            inverseJoinColumns = @JoinColumn(name = "ACCOUNT_ID", referencedColumnName = "ID"))
+    @Singular
+    private List<AccountEntity> owners;
 
     @Override
     public boolean equals(Object o) {
