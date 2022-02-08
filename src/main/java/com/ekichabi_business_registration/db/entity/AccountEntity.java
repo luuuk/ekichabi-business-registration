@@ -2,8 +2,11 @@ package com.ekichabi_business_registration.db.entity;
 
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
@@ -24,6 +27,14 @@ public class AccountEntity {
     private String name;
 
     private String password;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @Override
     public boolean equals(Object o) {
