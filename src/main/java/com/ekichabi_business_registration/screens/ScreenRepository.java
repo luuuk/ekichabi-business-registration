@@ -1,21 +1,22 @@
 package com.ekichabi_business_registration.screens;
 
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class ScreenRepository {
+
     // NOTE: only immutable screens can be declared here;
     // mutable screens like InputScreen should be created on the fly.
-    private final Screen welcomeScreen =
+    private static final Screen welcomeScreen =
             Screen.conScreen()
                     .line("Welcome to ekichabi 2.0!")
                     .line("Would you like to ...")
                     .line("1. Browse business")
-                    .line("2. Login")
+                    .line("2. Sign in")
                     .line("3. Sign up")
-                    .action(c -> {
+                    .addAction(c -> {
                         switch (c) {
                             case '1': return getBrowseBusinessScreen();
                             case '2':
@@ -27,13 +28,13 @@ public class ScreenRepository {
                         return null;
                     });
 
-    private final Screen businessOperationSelectScreen =
+    private static final Screen businessOperationSelectScreen =
             Screen.conScreen()
                     .line("Would you like to ...")
                     .line("1. Register a business")
                     .line("2. Edit a business")
                     .line("3. Delete a business")
-                    .action(c -> {
+                    .addAction(c -> {
                         switch (c) {
                             case '1':
                                 return getRegisterBusinessScreen();
@@ -44,31 +45,31 @@ public class ScreenRepository {
                         return null;
                     });
 
-    public Screen getBrowseBusinessScreen() {
+    public static Screen getBrowseBusinessScreen() {
         return null;
     }
 
-    public Screen getBusinessOperationSelectScreen() {
+    public static Screen getBusinessOperationSelectScreen() {
         return businessOperationSelectScreen;
     }
 
-    public Screen getDeleteBusinessScreen() {
+    public static Screen getDeleteBusinessScreen() {
         return null;
     }
 
-    public Screen getEditBusinessScreen() {
+    public static Screen getEditBusinessScreen() {
         return null;
     }
 
-    public Screen getRegisterBusinessScreen() {
+    public static Screen getRegisterBusinessScreen() {
         return null;
     }
 
-    public Screen getWelcomeScreen() {
+    public static Screen getWelcomeScreen() {
         return welcomeScreen;
     }
 
-    public Screen getSignupScreen() {
-        return null;
+    public static Screen getSignupScreen() {
+        return SignupScreenUtils.getSignupScreen();
     }
 }

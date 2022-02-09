@@ -7,44 +7,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class Screen {
+public abstract class Screen {
     public static Screen run(Screen screen, String s) {
         for (char c: s.toCharArray()) {
-            Screen next = null;
-            for (Action action: screen.actions) {
-                 next = action.apply(c);
-                if (next != null) {
-                    screen = next;
-                    break;
-                }
-            }
+            Screen next = screen.doAction(c);
             if (next == null) {
                 return screen.getFallbackScreen();
             }
+            screen = next;
         }
         return screen;
     }
 
-    public static Screen conScreen() {
-        return new Screen(true);
+    protected abstract Screen doAction(char c);
+
+    public static SimpleScreen conScreen() {
+        return new SimpleScreen(true);
     }
 
-    public static Screen endScreen() {
-        return new Screen(false);
+    public static SimpleScreen endScreen() {
+        return new SimpleScreen(false);
     }
 
     private final boolean shouldContinue;
     @Getter
     private final List<StringBuilder> lines = new ArrayList<>();
     @Getter
-    private final List<Action> actions = new ArrayList<>();
-    @Getter
     private Screen fallbackScreen;
-
-    public Screen action(Action action) {
-        actions.add(action);
-        return this;
-    }
 
     public Screen fallbackScreen(Screen screen) {
         fallbackScreen = screen;
