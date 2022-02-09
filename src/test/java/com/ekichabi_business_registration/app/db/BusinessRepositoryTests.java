@@ -26,14 +26,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @IntegrationTest
 class BusinessRepositoryTests {
-    @Autowired
-    private BusinessRepository businessRepository;
     private static CategoryEntity CATEGORY;
     private static SubcategoryEntity SUBCATEGORY_1;
     private static SubcategoryEntity SUBCATEGORY_2;
     private static DistrictEntity DISTRICT;
     private static VillageEntity VILLAGE;
     private static SubvillageEntity SUBVILLAGE;
+    @Autowired
+    private BusinessRepository businessRepository;
 
     @BeforeAll
     public static void setUp(
@@ -107,6 +107,7 @@ class BusinessRepositoryTests {
 
         assertTrue(savedBusiness.isPresent(), "business should persist after saving");
         assertEquals(business.getCategory(), savedBusiness.get().getCategory());
-        assertEquals(business.getSubcategories().size(), savedBusiness.get().getSubcategories().size());
+        assertEquals(business.getSubcategories().size(),
+                savedBusiness.get().getSubcategories().size());
     }
 }

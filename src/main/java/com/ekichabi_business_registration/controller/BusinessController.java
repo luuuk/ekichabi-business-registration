@@ -38,8 +38,8 @@ public class BusinessController {
             BusinessEntity entity = service.findBusinessById(Long.parseLong(id));
             return ResponseEntity.ok().body(entity);
         } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                    .body("Could not find business with ID " + id + ". Make sure your ID is numerical");
+            return ResponseEntity.badRequest().body("Could not find business with ID " + id
+                    + ". Make sure your ID is numerical");
         }
     }
 
