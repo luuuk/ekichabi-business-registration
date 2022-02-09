@@ -10,7 +10,7 @@ public class SimpleScreen extends Screen {
         super(shouldContinue);
     }
 
-    public Screen doAction(char c) {
+    public final Screen doAction(char c) {
         Screen screen;
         for (Action action: actions) {
             screen = action.apply(c);

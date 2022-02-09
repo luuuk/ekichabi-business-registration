@@ -9,7 +9,7 @@ public class ScreenRepository {
 
     // NOTE: only immutable screens can be declared here;
     // mutable screens like InputScreen should be created on the fly.
-    private static final Screen welcomeScreen =
+    private static final Screen WELCOME_SCREEN =
             Screen.conScreen()
                     .line("Welcome to ekichabi 2.0!")
                     .line("Would you like to ...")
@@ -28,7 +28,7 @@ public class ScreenRepository {
                         return null;
                     });
 
-    private static final Screen businessOperationSelectScreen =
+    private static final Screen BUSINESS_OPERATION_SELECT_SCREEN =
             Screen.conScreen()
                     .line("Would you like to ...")
                     .line("1. Register a business")
@@ -45,12 +45,16 @@ public class ScreenRepository {
                         return null;
                     });
 
+    private static final Screen ERROR_404_SCREEN =
+            Screen.endScreen()
+                  .line("ERROR Page not found");
+
     public static Screen getBrowseBusinessScreen() {
         return null;
     }
 
     public static Screen getBusinessOperationSelectScreen() {
-        return businessOperationSelectScreen;
+        return BUSINESS_OPERATION_SELECT_SCREEN;
     }
 
     public static Screen getDeleteBusinessScreen() {
@@ -66,10 +70,14 @@ public class ScreenRepository {
     }
 
     public static Screen getWelcomeScreen() {
-        return welcomeScreen;
+        return WELCOME_SCREEN;
     }
 
     public static Screen getSignupScreen() {
         return SignupScreenUtils.getSignupScreen();
+    }
+
+    public static Screen getError404Screen() {
+        return ERROR_404_SCREEN;
     }
 }

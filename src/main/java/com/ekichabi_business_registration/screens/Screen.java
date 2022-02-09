@@ -1,13 +1,20 @@
 package com.ekichabi_business_registration.screens;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
 public abstract class Screen {
+
+    @Getter
+    private final List<StringBuilder> lines = new ArrayList<>();
+    private Screen fallbackScreen;
+
+    protected Screen(boolean shouldContinue) {
+        this.shouldContinue = shouldContinue;
+    }
+
     public static Screen run(Screen screen, String s) {
         for (char c: s.toCharArray()) {
             Screen next = screen.doAction(c);
@@ -17,6 +24,14 @@ public abstract class Screen {
             screen = next;
         }
         return screen;
+    }
+
+    public Screen getFallbackScreen() {
+        if (fallbackScreen == null){
+            return ScreenRepository.getError404Screen();
+        } else {
+            return fallbackScreen;
+        }
     }
 
     protected abstract Screen doAction(char c);
@@ -30,10 +45,6 @@ public abstract class Screen {
     }
 
     private final boolean shouldContinue;
-    @Getter
-    private final List<StringBuilder> lines = new ArrayList<>();
-    @Getter
-    private Screen fallbackScreen;
 
     public Screen fallbackScreen(Screen screen) {
         fallbackScreen = screen;

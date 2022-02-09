@@ -48,6 +48,7 @@ public class SignupScreenUtils {
                 if (password.equals(this.password)) {
                     return new SignupConfirmationScreen(username, password);
                 } else {
+                    // TODO: think about this case; Should direct to an error page
                     return getFallbackScreen();
                 }
             } else {
