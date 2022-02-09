@@ -16,8 +16,8 @@ public class BusinessServiceTests {
     private BusinessService businessService;
 
     @Test
-    void findAllBusinesses_Success(){
-     List<BusinessEntity> businessEntityList = businessService.findAllBusinesses();
-     // TODO add entities to business repo and verify that they're returned here
+    void findAllBusinessesSuccess() {
+        List<BusinessEntity> businessEntityList = businessService.findAllBusinesses();
+        // TODO add entities to business repo and verify that they're returned here
     }
 }

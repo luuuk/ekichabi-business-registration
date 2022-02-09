@@ -23,7 +23,7 @@ public class BusinessService {
         return businessEntities;
     }
 
-    public BusinessEntity createBusiness(BusinessEntity businessEntity){
+    public BusinessEntity createBusiness(BusinessEntity businessEntity) {
         return repository.save(businessEntity);
     }
 }

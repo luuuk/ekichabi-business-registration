@@ -17,13 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class BusinessControllerTests {
 
     @Autowired
-    BusinessController businessController;
+    private BusinessController businessController;
 
     @Test
-    void findAllBusinesses_Success() {
+    void findAllBusinessesSuccess() {
         // TODO add businesses to DB and verify inclusion in response body
         ResponseEntity<List<BusinessEntity>> responseEntity = businessController.findAll();
 
-        assertEquals (responseEntity.getStatusCode(), HttpStatus.OK);
+        assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
     }
 }

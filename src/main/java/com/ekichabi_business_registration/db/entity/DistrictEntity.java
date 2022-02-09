@@ -1,9 +1,20 @@
 package com.ekichabi_business_registration.db.entity;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -23,13 +34,15 @@ public class DistrictEntity {
 
     @ToString.Include
     private String name;
+    @OneToMany(mappedBy = "district")
+    private Collection<VillageEntity> village;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null ||
-                Hibernate.getClass(this) != Hibernate.getClass(o)) {
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
             return false;
         }
         DistrictEntity that = (DistrictEntity) o;
@@ -40,7 +53,4 @@ public class DistrictEntity {
     public int hashCode() {
         return getClass().hashCode();
     }
-
-    @OneToMany(mappedBy = "district")
-    private Collection<VillageEntity> village;
 }

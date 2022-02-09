@@ -4,6 +4,7 @@ plugins {
     id "io.freefair.lombok" version "6.3.0"
     id "org.flywaydb.flyway" version "8.4.3"
     id 'java'
+    id 'checkstyle'
 }
 
 group = 'com.ekichabi_business_registration'
