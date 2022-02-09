@@ -7,7 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Collection;
 import java.util.Objects;
 
 @Getter
@@ -17,9 +17,8 @@ import java.util.Objects;
 @AllArgsConstructor
 @ToString(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "BUSINESS")
-public class BusinessEntity {
-
+@Table(name = "ACCOUNT")
+public class AccountEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @ToString.Include
@@ -28,24 +27,7 @@ public class BusinessEntity {
     @ToString.Include
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "CATEGORY_ID", referencedColumnName = "ID")
-    private CategoryEntity category;
-
-    @ManyToMany
-    @JoinTable(name="BUSINESS_TO_SUBCATEGORY",
-            joinColumns = @JoinColumn(name = "BUSINESS_ID", referencedColumnName = "ID"),
-            inverseJoinColumns = @JoinColumn(name = "SUBCATEGORY_ID", referencedColumnName = "ID"))
-    @Singular
-    private List<SubcategoryEntity> subcategories;
-
-    @ManyToOne
-    @JoinColumn(name = "SUBVILLAGE_ID")
-    private SubvillageEntity subvillage;
-
-    @ToString.Include
-    @Column(name = "COORDINATES")
-    private String coordinates;
+    private String password;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -54,13 +36,6 @@ public class BusinessEntity {
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @ManyToMany
-    @JoinTable(name="BUSINESS_ACCOUNT",
-            joinColumns = @JoinColumn(name = "BUSINESS_ID", referencedColumnName = "ID"),
-            inverseJoinColumns = @JoinColumn(name = "ACCOUNT_ID", referencedColumnName = "ID"))
-    @Singular
-    private List<AccountEntity> owners;
 
     @Override
     public boolean equals(Object o) {
@@ -71,7 +46,7 @@ public class BusinessEntity {
                 Hibernate.getClass(this) != Hibernate.getClass(o)) {
             return false;
         }
-        BusinessEntity that = (BusinessEntity) o;
+        AccountEntity that = (AccountEntity) o;
         return id != null && Objects.equals(id, that.id);
     }
 
@@ -80,4 +55,6 @@ public class BusinessEntity {
         return getClass().hashCode();
     }
 
+    @ManyToMany(mappedBy = "owners")
+    private Collection<BusinessEntity> ownedBusinesses;
 }
