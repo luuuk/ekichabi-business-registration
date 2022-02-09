@@ -26,12 +26,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @IntegrationTest
 class BusinessRepositoryTests {
-    private static CategoryEntity CATEGORY;
-    private static SubcategoryEntity SUBCATEGORY_1;
-    private static SubcategoryEntity SUBCATEGORY_2;
-    private static DistrictEntity DISTRICT;
-    private static VillageEntity VILLAGE;
-    private static SubvillageEntity SUBVILLAGE;
+    private static CategoryEntity category;
+    private static SubcategoryEntity subcategory1;
+    private static SubcategoryEntity subcategory2;
+    private static DistrictEntity district;
+    private static VillageEntity village;
+    private static SubvillageEntity subvillage;
     @Autowired
     private BusinessRepository businessRepository;
 
@@ -43,39 +43,39 @@ class BusinessRepositoryTests {
             @Autowired VillageRepository villageRepository,
             @Autowired SubvillageRepository subvillageRepository) {
 
-        CATEGORY = CategoryEntity.builder()
+        category = CategoryEntity.builder()
                 .name("Restaurant")
                 .build();
-        CATEGORY = categoryRepository.save(CATEGORY);
+        category = categoryRepository.save(category);
 
-        SUBCATEGORY_1 = SubcategoryEntity.builder()
+        subcategory1 = SubcategoryEntity.builder()
                 .name("Burgers")
-                .category(CATEGORY)
+                .category(category)
                 .build();
-        SUBCATEGORY_1 = subcategoryRepository.save(SUBCATEGORY_1);
+        subcategory1 = subcategoryRepository.save(subcategory1);
 
-        SUBCATEGORY_2 = SubcategoryEntity.builder()
+        subcategory2 = SubcategoryEntity.builder()
                 .name("Shakes")
-                .category(CATEGORY)
+                .category(category)
                 .build();
-        SUBCATEGORY_2 = subcategoryRepository.save(SUBCATEGORY_2);
+        subcategory2 = subcategoryRepository.save(subcategory2);
 
-        DISTRICT = DistrictEntity.builder()
+        district = DistrictEntity.builder()
                 .name("Capitol Hill")
                 .build();
-        DISTRICT = districtRepository.save(DISTRICT);
+        district = districtRepository.save(district);
 
-        VILLAGE = VillageEntity.builder()
+        village = VillageEntity.builder()
                 .name("(none)")
-                .district(DISTRICT)
+                .district(district)
                 .build();
-        VILLAGE = villageRepository.save(VILLAGE);
+        village = villageRepository.save(village);
 
-        SUBVILLAGE = SubvillageEntity.builder()
+        subvillage = SubvillageEntity.builder()
                 .name("(none)")
-                .village(VILLAGE)
+                .village(village)
                 .build();
-        SUBVILLAGE = subvillageRepository.save(SUBVILLAGE);
+        subvillage = subvillageRepository.save(subvillage);
     }
 
     @AfterAll
@@ -85,21 +85,21 @@ class BusinessRepositoryTests {
             @Autowired DistrictRepository districtRepository,
             @Autowired VillageRepository villageRepository,
             @Autowired SubvillageRepository subvillageRepository) {
-        subvillageRepository.delete(SUBVILLAGE);
-        villageRepository.delete(VILLAGE);
-        districtRepository.delete(DISTRICT);
-        subcategoryRepository.delete(SUBCATEGORY_1);
-        subcategoryRepository.delete(SUBCATEGORY_2);
-        categoryRepository.delete(CATEGORY);
+        subvillageRepository.delete(subvillage);
+        villageRepository.delete(village);
+        districtRepository.delete(district);
+        subcategoryRepository.delete(subcategory1);
+        subcategoryRepository.delete(subcategory2);
+        categoryRepository.delete(category);
     }
 
     @Test
     @Transactional
     void getBusinessOK() {
         BusinessEntity business = BusinessEntity.builder()
-                .category(CATEGORY)
-                .subcategory(SUBCATEGORY_1)
-                .subcategory(SUBCATEGORY_2)
+                .category(category)
+                .subcategory(subcategory1)
+                .subcategory(subcategory2)
                 .name("Dick's Drive In")
                 .build();
         business = businessRepository.save(business);
