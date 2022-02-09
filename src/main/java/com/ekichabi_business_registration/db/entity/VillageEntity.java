@@ -38,7 +38,7 @@ public class VillageEntity {
     @ToString.Include
     private String name;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "DISTRICT_ID", referencedColumnName = "ID")
     @ToString.Include
     private DistrictEntity district;
