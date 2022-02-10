@@ -39,10 +39,10 @@ public class TestEntities {
             .name("And Pine")
             .village(VILLAGE)
             .build();
-
-    public static final AccountEntity ACCOUNT_1 = AccountEntity.builder().name("Fremont Troll").build();
-    public static final AccountEntity ACCOUNT_2 = AccountEntity.builder().name("Mariner Moose").build();
-
+    public static final AccountEntity ACCOUNT_1 =
+            AccountEntity.builder().name("Fremont Troll").createdAt(LocalDateTime.now()).build();
+    public static final AccountEntity ACCOUNT_2 =
+            AccountEntity.builder().name("Mariner Moose").createdAt(LocalDateTime.now()).build();
     public static final BusinessEntity BUSINESS_ENTITY = BusinessEntity.builder()
             .coordinates("69.420.1234")
             .name("Dicks")
