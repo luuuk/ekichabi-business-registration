@@ -1,5 +1,6 @@
 package com.ekichabi_business_registration.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,7 +35,9 @@ public class DistrictEntity {
 
     @ToString.Include
     private String name;
+
     @OneToMany(mappedBy = "district")
+    @JsonIgnore
     private Collection<VillageEntity> village;
 
     @Override

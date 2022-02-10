@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SubcategoryRepository extends CrudRepository<SubcategoryEntity, Integer> {
     boolean existsByNameAndCategory(String subcategoryName, CategoryEntity parentCategory);
+
+    SubcategoryEntity findByNameAndCategory(String name, CategoryEntity category);
 }

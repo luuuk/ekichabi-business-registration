@@ -1,5 +1,6 @@
 package com.ekichabi_business_registration.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,7 +50,9 @@ public class AccountEntity {
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
     @ManyToMany(mappedBy = "owners")
+    @JsonIgnore
     private Collection<BusinessEntity> ownedBusinesses;
 
     @Override

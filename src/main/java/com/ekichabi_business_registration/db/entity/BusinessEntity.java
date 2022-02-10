@@ -9,10 +9,13 @@ import lombok.Setter;
 import lombok.Singular;
 import lombok.ToString;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,9 +24,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -77,10 +80,12 @@ public class BusinessEntity {
             joinColumns = @JoinColumn(name = "BUSINESS_ID", referencedColumnName = "ID"),
             inverseJoinColumns = @JoinColumn(name = "ACCOUNT_ID", referencedColumnName = "ID"))
     @Singular
+    @Cascade(CascadeType.PERSIST)
     private List<AccountEntity> owners;
 
-    @OneToMany(mappedBy = "businessEntity")
-    private List<PhoneNumberEntity> phoneNumbers;
+    @ElementCollection
+    @Builder.Default
+    private List<String> phoneNumbers = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
