@@ -1,5 +1,5 @@
 package com.ekichabi_business_registration.service;
 
-public class InvalidBusinessCreatedException
+public class InvalidCreationException
         extends Throwable {
 }

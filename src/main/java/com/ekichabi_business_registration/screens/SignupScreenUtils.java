@@ -1,6 +1,10 @@
 package com.ekichabi_business_registration.screens;
 
+import com.ekichabi_business_registration.db.entity.AccountEntity;
+import com.ekichabi_business_registration.service.AccountService;
+import com.ekichabi_business_registration.service.InvalidCreationException;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -48,8 +52,7 @@ public class SignupScreenUtils {
                 if (password.equals(this.password)) {
                     return new SignupConfirmationScreen(username, password);
                 } else {
-                    // TODO: think about this case; Should direct to an error page
-                    return getFallbackScreen();
+                    return new ErrorScreen("Password does not match");
                 }
             } else {
                 return new SignupScreenPassword(username, password);
@@ -61,20 +64,44 @@ public class SignupScreenUtils {
         return new SignupScreen();
     }
 
-    private static class SignupConfirmationScreen extends SimpleScreen {
+    private static class SignupConfirmationScreen extends Screen implements WithRequest {
+        private final String username;
+        private final String password;
+
+        @Autowired
+        private AccountService accountService;
+
         public SignupConfirmationScreen(String username, String password) {
             super(false);
+            this.username = username;
+            this.password = password;
             line("username: " + username);
             line("password: " + Strings.repeat("*", password.length()));
             line("0. create");
             line("1. cancel");
-            addAction(c -> {
-                switch (c) {
-                    case '0': return null; // TODO: think about this case
-                    case '1': return ScreenRepository.getWelcomeScreen();
-                }
-                return null;
-            });
+        }
+
+        @Override
+        protected Screen doAction(char c) {
+            switch (c) {
+                case '0': return new SuccessScreen("Account registration success");
+                case '1': return ScreenRepository.getWelcomeScreen();
+            }
+            return this;
+        }
+
+        @Override
+        public void doRequest() {
+            AccountEntity accountEntity = AccountEntity.builder()
+                    .name(username)
+                    .password(password)
+                    .build();
+            try {
+                accountService.createBusiness(accountEntity);
+            } catch (InvalidCreationException e) {
+                // TODO: deal with creation failure
+                e.printStackTrace();
+            }
         }
     }
 }
