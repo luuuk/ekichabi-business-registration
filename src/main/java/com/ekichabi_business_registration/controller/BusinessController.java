@@ -2,6 +2,7 @@ package com.ekichabi_business_registration.controller;
 
 import com.ekichabi_business_registration.db.entity.BusinessEntity;
 import com.ekichabi_business_registration.service.BusinessService;
+import com.ekichabi_business_registration.service.InvalidBusinessCreatedException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,7 @@ public class BusinessController {
         try {
             BusinessEntity created = service.createBusiness(businessEntity);
             return ResponseEntity.ok().body(created);
-        } catch (Exception e) {
+        } catch (InvalidBusinessCreatedException e) {
             return ResponseEntity.badRequest()
                     .body("Please pass a valid business in your request body");
         }

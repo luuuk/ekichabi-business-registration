@@ -32,3 +32,6 @@ Our USSD app uses AfricasTalking.com as the interface between our Spring rest ap
 5. Open a PR from your feature branch into Main
 6. Once approved and merged, delete your remote feature branch
 7. Finally, rebase Staging off of Main and push Staging (this should have no effect, but we want to keep Staging and Main in sync for the next person who makes USSD changes)
+
+### Running migrations from CLI
+`flyway migrate -url=jdbc:postgresql://localhost:5432/{DBName} -user={DBUser} -password={DBPW} -locations=src/main/resources/db`
