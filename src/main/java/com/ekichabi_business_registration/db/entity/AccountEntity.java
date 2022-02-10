@@ -1,11 +1,23 @@
 package com.ekichabi_business_registration.db.entity;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Objects;
@@ -20,7 +32,7 @@ import java.util.Objects;
 @Table(name = "ACCOUNT")
 public class AccountEntity {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @ToString.Include
     private Long id;
 
@@ -36,14 +48,15 @@ public class AccountEntity {
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+    @ManyToMany(mappedBy = "owners")
+    private Collection<BusinessEntity> ownedBusinesses;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null ||
-                Hibernate.getClass(this) != Hibernate.getClass(o)) {
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
             return false;
         }
         AccountEntity that = (AccountEntity) o;
@@ -54,7 +67,4 @@ public class AccountEntity {
     public int hashCode() {
         return getClass().hashCode();
     }
-
-    @ManyToMany(mappedBy = "owners")
-    private Collection<BusinessEntity> ownedBusinesses;
 }

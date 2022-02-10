@@ -10,12 +10,12 @@ import org.springframework.context.annotation.Bean;
 public class App {
 
     // Main app to run
-	public static void main(String[] args) {
-		SpringApplication.run(App.class, args);
-	}
+    public static void main(final String[] args) {
+        SpringApplication.run(App.class, args);
+    }
 
     @Bean
-    ApplicationRunner init(BusinessRepository businessRepository) {
+    static ApplicationRunner init(BusinessRepository businessRepository) {
         return args -> System.out.println("number of businesses: " + businessRepository.count());
     }
 }

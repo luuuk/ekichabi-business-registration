@@ -23,7 +23,15 @@ public class BusinessService {
         return businessEntities;
     }
 
-    public BusinessEntity createBusiness(BusinessEntity businessEntity){
+    public BusinessEntity createBusiness(BusinessEntity businessEntity)
+            throws InvalidBusinessCreatedException {
+
+        // If business has no name throw exception
+        if (businessEntity.getName() == null) {
+            throw new InvalidBusinessCreatedException();
+        }
+
+        //TODO Luke add more validation steps to this method
         return repository.save(businessEntity);
     }
 }
