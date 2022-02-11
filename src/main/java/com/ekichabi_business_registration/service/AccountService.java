@@ -18,6 +18,11 @@ public class AccountService {
             throw new InvalidCreationException();
         }
 
+        System.out.println(repository.findByName(accountEntity.getName()));
+        if (repository.findByName(accountEntity.getName()) != null) {
+            throw new InvalidCreationException();
+        }
+
         // TODO: add more checks
         return repository.save(accountEntity);
     }

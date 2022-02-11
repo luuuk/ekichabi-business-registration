@@ -3,14 +3,28 @@ package com.ekichabi_business_registration.screens;
 import com.ekichabi_business_registration.db.entity.AccountEntity;
 import com.ekichabi_business_registration.service.AccountService;
 import com.ekichabi_business_registration.service.InvalidCreationException;
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-@Component
+import java.util.Optional;
+
+@Configuration
+@RequiredArgsConstructor
 public class SignupScreenUtils {
 
+    @Component("signupScreen")
+    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
     private static class SignupScreen extends InputScreen {
+        @Autowired
+        private ApplicationContext context;
 
         public SignupScreen() {
             super();
@@ -20,11 +34,15 @@ public class SignupScreenUtils {
 
         @Override
         public Screen getNextScreen(String username) {
-            return new SignupScreenPassword(username);
+            return context.getBean(SignupScreenPassword.class, username);
         }
     }
 
+    @Component
+    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
     private static class SignupScreenPassword extends PasswordScreen {
+        @Autowired
+        private ApplicationContext context;
         private final String username;
         private final String password;
 
@@ -50,26 +68,26 @@ public class SignupScreenUtils {
         public Screen getNextScreen(String password) {
             if (hasRepeated()) {
                 if (password.equals(this.password)) {
-                    return new SignupConfirmationScreen(username, password);
+                    return context.getBean(SignupConfirmationScreen.class, username, password);
                 } else {
-                    return new ErrorScreen("Password does not match");
+                    return context.getBean(ErrorScreen.class, "Password does not match");
                 }
             } else {
-                return new SignupScreenPassword(username, password);
+                return context.getBean(SignupScreenPassword.class, username, password);
             }
         }
     }
 
-    public static Screen getSignupScreen() {
-        return new SignupScreen();
-    }
-
-    private static class SignupConfirmationScreen extends Screen implements WithRequest {
+    @Component
+    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+    private static class SignupConfirmationScreen extends Screen {
+        @Autowired
+        private ApplicationContext context;
+        @Autowired
+        private AccountService accountService;
         private final String username;
         private final String password;
 
-        @Autowired
-        private AccountService accountService;
 
         public SignupConfirmationScreen(String username, String password) {
             super(false);
@@ -82,26 +100,30 @@ public class SignupScreenUtils {
         }
 
         @Override
-        protected Screen doAction(char c) {
+        protected Transit doAction(char c) {
             switch (c) {
-                case '0': return new SuccessScreen("Account registration success");
-                case '1': return ScreenRepository.getWelcomeScreen();
+                case '0': return new Transit(context.getBean(SuccessScreen.class, "Account registration success")) {
+
+                    @Override
+                    public Optional<Screen> doRequest(ApplicationContext context) {
+
+                        AccountEntity accountEntity = AccountEntity.builder()
+                                .name(username)
+                                .password(password)
+                                .build();
+                        try {
+                            accountService.createBusiness(accountEntity);
+                        } catch (InvalidCreationException e) {
+                            // TODO: deal with creation failure
+                            return Optional.of(context.getBean(ErrorScreen.class, "User creation error"));
+                        }
+                        return Optional.empty();
+                    }
+                };
+                case '1': return new PureTransit(context.getBean("welcomeScreen", Screen.class));
             }
-            return this;
+            return new PureTransit(this);
         }
 
-        @Override
-        public void doRequest() {
-            AccountEntity accountEntity = AccountEntity.builder()
-                    .name(username)
-                    .password(password)
-                    .build();
-            try {
-                accountService.createBusiness(accountEntity);
-            } catch (InvalidCreationException e) {
-                // TODO: deal with creation failure
-                e.printStackTrace();
-            }
-        }
     }
 }

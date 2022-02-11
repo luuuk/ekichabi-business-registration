@@ -1,11 +1,22 @@
 package com.ekichabi_business_registration.screens;
 
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
+import org.springframework.data.util.Pair;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+@Component
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public abstract class Screen {
+    @Autowired
+    private ApplicationContext context;
 
     @Getter
     private final List<StringBuilder> lines = new ArrayList<>();
@@ -15,26 +26,26 @@ public abstract class Screen {
         this.shouldContinue = shouldContinue;
     }
 
-    public static Screen run(Screen screen, String s) {
+    public static Transit run(Screen screen, String s) {
+        // TODO: There is still another funky bug, where the next page of an error is a success page...
+        Transit transit = new PureTransit(screen);
         for (char c: s.toCharArray()) {
-            Screen next = screen.doAction(c);
-            if (next == null) {
-                return screen.getFallbackScreen();
+            screen = transit.getScreen();
+            Transit nextTransit = screen.doAction(c);
+            if (nextTransit == null) {
+                nextTransit = new PureTransit(screen.getFallbackScreen());
             }
-            screen = next;
+            transit = nextTransit;
         }
-        return screen;
+        return transit;
     }
 
     public Screen getFallbackScreen() {
-        if (fallbackScreen == null){
-            return ScreenRepository.getError404Screen();
-        } else {
-            return fallbackScreen;
-        }
+        return Objects.requireNonNullElseGet(fallbackScreen, () -> context.getBean("error404Screen", Screen.class));
     }
 
-    protected abstract Screen doAction(char c);
+
+    protected abstract Transit doAction(char c);
 
     public static SimpleScreen conScreen() {
         return new SimpleScreen(true);

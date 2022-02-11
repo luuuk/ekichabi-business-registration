@@ -10,11 +10,11 @@ public class SimpleScreen extends Screen {
         super(shouldContinue);
     }
 
-    public final Screen doAction(char c) {
+    public final Transit doAction(char c) {
         Screen screen;
         for (Action action: actions) {
             screen = action.apply(c);
-            if (screen != null) return screen;
+            if (screen != null) return new PureTransit(screen);
         }
         return null;
     }
