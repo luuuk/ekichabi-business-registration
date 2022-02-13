@@ -3,6 +3,8 @@ package com.ekichabi_business_registration.controller;
 import com.ekichabi_business_registration.screens.Screen;
 import com.ekichabi_business_registration.screens.ScreenRepository;
 import com.ekichabi_business_registration.screens.Transit;
+import com.ekichabi_business_registration.service.Session;
+import com.ekichabi_business_registration.service.SessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.context.ApplicationContext;
@@ -24,6 +26,7 @@ import java.util.Optional;
 public class CommonController {
 
     private final ApplicationContext context;
+    private final SessionService sessionService;
 
     @GetMapping("favicon.ico")
     public ResponseEntity<ImageIcon> favicon() {
@@ -32,10 +35,29 @@ public class CommonController {
     }
 
     @GetMapping("ussd-simulator")
-    public String ussdSimulator(String command) {
-        Transit transit = Screen.run(context.getBean("welcomeScreen", Screen.class), command);
-        Optional<Screen> optionalScreen = transit.doRequest(context);
-        Screen screen = optionalScreen.orElseGet(transit::getScreen);
-        return screen.toString();
+    public String ussdSimulator(Long id, String command) {
+        final Session session;
+
+        if (sessionService.contains(id)) {
+            if (command.equals((""))) {
+                return context.getBean("error404Screen", Screen.class).toString();
+            }
+            session = sessionService.get(id);
+            if (session.getCommand().length() + 1 != command.length()) {
+                return context.getBean("error404Screen", Screen.class).toString();
+            }
+            session.setCommand(command);
+            val transit = session.getScreen().doAction(command.charAt(command.length() - 1));
+            transit.doRequest(context);
+            session.setScreen(transit.getScreen());
+        } else {
+            if (!command.equals("")) {
+                // fresh command should correspond to fresh session
+                return context.getBean("error404Screen", Screen.class).toString();
+            }
+            session = new Session(id, context.getBean("welcomeScreen", Screen.class), command);
+            sessionService.put(id, session);
+        }
+        return session.getScreen().toString();
     }
 }

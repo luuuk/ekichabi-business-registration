@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,7 +25,7 @@ public class ErrorScreen extends Screen {
     }
 
     @Override
-    protected Transit doAction(char c) {
+    public Transit doAction(char c) {
         if (c == '9') {
             count++;
             if (count == 2) {

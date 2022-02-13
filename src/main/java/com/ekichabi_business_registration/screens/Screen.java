@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -26,26 +25,12 @@ public abstract class Screen {
         this.shouldContinue = shouldContinue;
     }
 
-    public static Transit run(Screen screen, String s) {
-        // TODO: There is still another funky bug, where the next page of an error is a success page...
-        Transit transit = new PureTransit(screen);
-        for (char c: s.toCharArray()) {
-            screen = transit.getScreen();
-            Transit nextTransit = screen.doAction(c);
-            if (nextTransit == null) {
-                nextTransit = new PureTransit(screen.getFallbackScreen());
-            }
-            transit = nextTransit;
-        }
-        return transit;
-    }
-
     public Screen getFallbackScreen() {
         return Objects.requireNonNullElseGet(fallbackScreen, () -> context.getBean("error404Screen", Screen.class));
     }
 
 
-    protected abstract Transit doAction(char c);
+    public abstract Transit doAction(char c);
 
     public static SimpleScreen conScreen() {
         return new SimpleScreen(true);

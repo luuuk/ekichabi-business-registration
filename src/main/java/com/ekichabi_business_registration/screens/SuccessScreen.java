@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
-
-import javax.el.BeanNameResolver;
 
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -28,7 +25,7 @@ public class SuccessScreen extends Screen {
     }
 
     @Override
-    protected Transit doAction(char c) {
+    public Transit doAction(char c) {
         if (c == '9') {
             count++;
             if (count == 2) {

@@ -5,11 +5,9 @@ import com.ekichabi_business_registration.service.AccountService;
 import com.ekichabi_business_registration.service.InvalidCreationException;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -100,7 +98,7 @@ public class SignupScreenUtils {
         }
 
         @Override
-        protected Transit doAction(char c) {
+        public Transit doAction(char c) {
             switch (c) {
                 case '0': return new Transit(context.getBean(SuccessScreen.class, "Account registration success")) {
 

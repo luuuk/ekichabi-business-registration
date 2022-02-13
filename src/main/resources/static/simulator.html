@@ -4,8 +4,10 @@
 <script>
     let text = "";
     let screen = "";
+    // hacky way of generating an id
+    let id = 1000 + Math.round(Math.random() * 1000000);
     function update(text) {
-        window.fetch("ussd-simulator/?command=" + text)
+        window.fetch("ussd-simulator/?command=" + text + "&id=" + id)
             .then(response => response.text().then(
                 text => {
                     screen = text;
