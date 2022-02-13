@@ -26,9 +26,9 @@ public abstract class Screen {
     }
 
     public Screen getFallbackScreen() {
-        return Objects.requireNonNullElseGet(fallbackScreen, () -> context.getBean("error404Screen", Screen.class));
+        return Objects.requireNonNullElseGet(fallbackScreen,
+                () -> context.getBean("error404Screen", Screen.class));
     }
-
 
     public abstract Transit doAction(char c);
 

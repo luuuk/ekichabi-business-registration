@@ -1,7 +1,11 @@
 package com.ekichabi_business_registration.screens;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+
 public abstract class InputScreen extends SimpleScreen {
-    protected final StringBuilder sb = new StringBuilder();
+    @Getter(AccessLevel.PROTECTED)
+    private final StringBuilder sb = new StringBuilder();
 
     public InputScreen() {
         super(true);

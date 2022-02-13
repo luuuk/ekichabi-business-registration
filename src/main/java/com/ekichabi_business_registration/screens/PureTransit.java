@@ -1,7 +1,5 @@
 package com.ekichabi_business_registration.screens;
 
-import org.springframework.context.ApplicationContext;
-
 import java.util.Optional;
 
 public class PureTransit extends Transit {
@@ -10,7 +8,7 @@ public class PureTransit extends Transit {
     }
 
     @Override
-    public Optional<Screen> doRequest(ApplicationContext context) {
+    public Optional<Screen> doRequest() {
         return Optional.empty();
     }
 }

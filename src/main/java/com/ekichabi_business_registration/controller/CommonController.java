@@ -1,8 +1,6 @@
 package com.ekichabi_business_registration.controller;
 
 import com.ekichabi_business_registration.screens.Screen;
-import com.ekichabi_business_registration.screens.ScreenRepository;
-import com.ekichabi_business_registration.screens.Transit;
 import com.ekichabi_business_registration.service.Session;
 import com.ekichabi_business_registration.service.SessionService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.swing.ImageIcon;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("")
@@ -48,8 +45,8 @@ public class CommonController {
             }
             session.setCommand(command);
             val transit = session.getScreen().doAction(command.charAt(command.length() - 1));
-            transit.doRequest(context);
-            session.setScreen(transit.getScreen());
+            val screen = transit.doRequest().orElse(transit.getScreen());
+            session.setScreen(screen);
         } else {
             if (!command.equals("")) {
                 // fresh command should correspond to fresh session

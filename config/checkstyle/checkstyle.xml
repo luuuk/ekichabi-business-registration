@@ -145,7 +145,10 @@
         <!-- See https://checkstyle.org/config_coding.html -->
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
-        <module name="HiddenField"/>
+        <module name="HiddenField" >
+            <property name="ignoreSetter" value="true" />
+            <property name="ignoreConstructorParameter" value="true" />
+        </module>
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
         <module name="MagicNumber"/>
@@ -163,7 +166,6 @@
         <!-- Miscellaneous other checks.                   -->
         <!-- See https://checkstyle.org/config_misc.html -->
         <module name="ArrayTypeStyle"/>
-        <module name="TodoComment"/>
         <module name="UpperEll"/>
 
         <!-- https://checkstyle.org/config_filters.html#SuppressionXpathFilter -->

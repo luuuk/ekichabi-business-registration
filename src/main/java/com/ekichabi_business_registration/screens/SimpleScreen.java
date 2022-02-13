@@ -14,7 +14,9 @@ public class SimpleScreen extends Screen {
         Screen screen;
         for (Action action: actions) {
             screen = action.apply(c);
-            if (screen != null) return new PureTransit(screen);
+            if (screen != null) {
+                return new PureTransit(screen);
+            }
         }
         return null;
     }

@@ -24,7 +24,7 @@ public class SignupScreenUtils {
         @Autowired
         private ApplicationContext context;
 
-        public SignupScreen() {
+        SignupScreen() {
             super();
             line("Sign up - enter username");
             line("Usernames must be unique");
@@ -44,14 +44,14 @@ public class SignupScreenUtils {
         private final String username;
         private final String password;
 
-        public SignupScreenPassword(String username) {
+        SignupScreenPassword(String username) {
             super();
             this.username = username;
             this.password = null;
             line("Sign up - enter password");
         }
 
-        public SignupScreenPassword(String username, String password) {
+        SignupScreenPassword(String username, String password) {
             super();
             this.username = username;
             this.password = password;
@@ -63,15 +63,15 @@ public class SignupScreenUtils {
         }
 
         @Override
-        public Screen getNextScreen(String password) {
+        public Screen getNextScreen(String suppliedPassword) {
             if (hasRepeated()) {
-                if (password.equals(this.password)) {
+                if (password.equals(suppliedPassword)) {
                     return context.getBean(SignupConfirmationScreen.class, username, password);
                 } else {
                     return context.getBean(ErrorScreen.class, "Password does not match");
                 }
             } else {
-                return context.getBean(SignupScreenPassword.class, username, password);
+                return context.getBean(SignupScreenPassword.class, username, suppliedPassword);
             }
         }
     }
@@ -87,7 +87,7 @@ public class SignupScreenUtils {
         private final String password;
 
 
-        public SignupConfirmationScreen(String username, String password) {
+        SignupConfirmationScreen(String username, String password) {
             super(false);
             this.username = username;
             this.password = password;
@@ -100,27 +100,32 @@ public class SignupScreenUtils {
         @Override
         public Transit doAction(char c) {
             switch (c) {
-                case '0': return new Transit(context.getBean(SuccessScreen.class, "Account registration success")) {
+                case '0':
+                    return new Transit(context.getBean(SuccessScreen.class,
+                            "Account registration success")) {
 
-                    @Override
-                    public Optional<Screen> doRequest(ApplicationContext context) {
+                        @Override
+                        public Optional<Screen> doRequest() {
 
-                        AccountEntity accountEntity = AccountEntity.builder()
-                                .name(username)
-                                .password(password)
-                                .build();
-                        try {
-                            accountService.createBusiness(accountEntity);
-                        } catch (InvalidCreationException e) {
-                            // TODO: deal with creation failure
-                            return Optional.of(context.getBean(ErrorScreen.class, "User creation error"));
+                            AccountEntity accountEntity = AccountEntity.builder()
+                                    .name(username)
+                                    .password(password)
+                                    .build();
+                            try {
+                                accountService.createBusiness(accountEntity);
+                            } catch (InvalidCreationException e) {
+                                return Optional.of(context.getBean(ErrorScreen.class,
+                                        "User creation error"));
+                            }
+                            return Optional.empty();
                         }
-                        return Optional.empty();
-                    }
-                };
-                case '1': return new PureTransit(context.getBean("welcomeScreen", Screen.class));
+                    };
+                case '1':
+                    return new PureTransit(context.getBean("welcomeScreen", Screen.class));
+                default:
+                    return new PureTransit(this);
             }
-            return new PureTransit(this);
+
         }
 
     }

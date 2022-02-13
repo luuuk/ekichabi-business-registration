@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 @Configuration
 @RequiredArgsConstructor
@@ -29,8 +28,9 @@ public class ScreenRepository {
                                 case '2': return getEditBusinessScreen();
                                 case '3':
                                     return getDeleteBusinessScreen();
+                                default:
+                                    return null;
                             }
-                            return null;
                         });
     }
 
@@ -59,12 +59,14 @@ public class ScreenRepository {
                             switch (c) {
                                 case '1': return getBrowseBusinessScreen();
                                 case '2':
-                                    // TODO: Actually, we need to login before doing operation selection
+                                    // TODO Actually, we need to login before
+                                    //  doing operation selection
                                     return getBusinessOperationSelectScreen();
                                 case '3':
                                     return context.getBean("signupScreen", Screen.class);
+                                default:
+                                    return null;
                             }
-                            return null;
                         });
     }
 
