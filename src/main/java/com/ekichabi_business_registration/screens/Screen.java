@@ -19,6 +19,7 @@ public abstract class Screen {
 
     @Getter
     private final List<StringBuilder> lines = new ArrayList<>();
+    private final boolean shouldContinue;
     private Screen fallbackScreen;
 
     protected Screen(boolean shouldContinue) {
@@ -39,8 +40,6 @@ public abstract class Screen {
     public static SimpleScreen endScreen() {
         return new SimpleScreen(false);
     }
-
-    private final boolean shouldContinue;
 
     public Screen fallbackScreen(Screen screen) {
         fallbackScreen = screen;
