@@ -1,20 +1,21 @@
 package com.ekichabi_business_registration.screens;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 @Configuration
 @RequiredArgsConstructor
-public class ScreenRepository {
-    private final ApplicationContext context;
+public class WelcomeScreenRepository {
+    private final SignupScreenRepository signupScreenRepository;
 
     public static Screen getBrowseBusinessScreen() {
         return null;
     }
 
-    @Bean("businessOperationSelectScreen")
     public Screen getBusinessOperationSelectScreen() {
         return Screen.conScreen()
                         .line("Would you like to ...")
@@ -46,7 +47,6 @@ public class ScreenRepository {
         return null;
     }
 
-    @Bean("welcomeScreen")
     public Screen getWelcomeScreen() {
         return
                 Screen.conScreen()
@@ -63,14 +63,13 @@ public class ScreenRepository {
                                     //  doing operation selection
                                     return getBusinessOperationSelectScreen();
                                 case '3':
-                                    return context.getBean("signupScreen", Screen.class);
+                                    return signupScreenRepository.getSignupScreen();
                                 default:
                                     return null;
                             }
                         });
     }
 
-    @Bean("error404Screen")
     public Screen getError404Screen() {
         return Screen.endScreen()
                         .line("ERROR Page not found");

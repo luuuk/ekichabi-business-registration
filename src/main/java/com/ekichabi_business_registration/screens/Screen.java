@@ -1,9 +1,10 @@
 package com.ekichabi_business_registration.screens;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +15,8 @@ import java.util.Objects;
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public abstract class Screen {
-    @Autowired
-    private ApplicationContext context;
+    @Setter(onMethod = @__({@Autowired}), onParam = @__({@Lazy}))
+    private WelcomeScreenRepository welcomeScreenRepository;
 
     @Getter
     private final List<StringBuilder> lines = new ArrayList<>();
@@ -28,7 +29,7 @@ public abstract class Screen {
 
     public Screen getFallbackScreen() {
         return Objects.requireNonNullElseGet(fallbackScreen,
-                () -> context.getBean("error404Screen", Screen.class));
+                welcomeScreenRepository::getError404Screen);
     }
 
     public abstract Transit doAction(char c);
