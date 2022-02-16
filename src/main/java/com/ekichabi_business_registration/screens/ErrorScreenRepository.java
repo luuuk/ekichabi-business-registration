@@ -4,10 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,7 +22,7 @@ public class ErrorScreenRepository {
         private final String reason;
         private int count = 0;
 
-        public ErrorScreen(String reason) {
+        ErrorScreen(String reason) {
             super(true);
             this.reason = reason;
             line("ERROR");
