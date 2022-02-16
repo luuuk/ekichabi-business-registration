@@ -24,11 +24,11 @@ public class BusinessService {
     }
 
     public BusinessEntity createBusiness(BusinessEntity businessEntity)
-            throws InvalidBusinessCreatedException {
+            throws InvalidCreationException {
 
         // If business has no name throw exception
         if (businessEntity.getName() == null) {
-            throw new InvalidBusinessCreatedException();
+            throw new InvalidCreationException();
         }
 
         //TODO Luke add more validation steps to this method
