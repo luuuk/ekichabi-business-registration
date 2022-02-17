@@ -44,7 +44,8 @@ public class CommonController {
     public String ussdEntryPoint(@ModelAttribute UssdRequest request) {
         try {
             final Session session = sessionService.getSessionFromIdAndCommand(
-                    request.getSessionId(), request.getText(), welcomeScreenRepository::getWelcomeScreen);
+                    request.getSessionId(), request.getText(),
+                    welcomeScreenRepository::getWelcomeScreen);
             return session.getScreen().toString();
         } catch (IllegalArgumentException e) {
             return welcomeScreenRepository.getError404Screen().toString();

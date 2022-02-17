@@ -33,7 +33,8 @@ public class SessionService {
         sessions.put(id, session);
     }
 
-    public Session getSessionFromIdAndCommand(String id, String command, Supplier<Screen> defaultScreen)
+    public Session getSessionFromIdAndCommand(
+            String id, String command, Supplier<Screen> defaultScreen)
             throws IllegalArgumentException {
         Session session;
         if (this.contains(id)) {
