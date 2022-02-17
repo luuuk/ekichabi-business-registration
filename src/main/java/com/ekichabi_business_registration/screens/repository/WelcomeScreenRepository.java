@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class WelcomeScreenRepository {
     private final SignupScreenRepository signupScreenRepository;
+    private final SignInScreenRepository signInScreenRepository;
 
     public static Screen getBrowseBusinessScreen() {
         return null;
@@ -56,9 +57,7 @@ public class WelcomeScreenRepository {
                             switch (c) {
                                 case '1': return getBrowseBusinessScreen();
                                 case '2':
-                                    // TODO Actually, we need to login before
-                                    //  doing operation selection
-                                    return getBusinessOperationSelectScreen();
+                                    return signInScreenRepository.getSignInScreen();
                                 case '3':
                                     return signupScreenRepository.getSignupScreen();
                                 default:
