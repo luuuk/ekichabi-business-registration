@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleScreen extends Screen {
-    private StringBuilder buffer;
+    private StringBuilder buffer = new StringBuilder();
 
     public SimpleScreen(boolean shouldContinue) {
         super(shouldContinue);
