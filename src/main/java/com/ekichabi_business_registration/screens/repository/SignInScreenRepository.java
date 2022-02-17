@@ -25,7 +25,7 @@ public class SignInScreenRepository {
     private class SignInScreenPassword extends InputScreen {
         private final String username;
 
-        public SignInScreenPassword(String username) {
+        SignInScreenPassword(String username) {
             super();
             this.username = username;
         }
