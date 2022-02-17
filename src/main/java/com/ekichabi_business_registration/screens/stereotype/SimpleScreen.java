@@ -6,19 +6,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleScreen extends Screen {
+    private StringBuilder buffer;
+
     public SimpleScreen(boolean shouldContinue) {
         super(shouldContinue);
     }
 
     public final Screen doAction(char c) {
-        Screen screen;
-        for (Action action: actions) {
-            screen = action.apply(c);
-            if (screen != null) {
-                return screen;
+        if (c == '*') {
+            for (Action action : actions) {
+                Screen screen = action.apply(buffer.toString());
+                if (screen != null) {
+                    return screen;
+                }
             }
+            return null;
+        } else {
+            buffer.append(c);
+            return this;
         }
-        return null;
     }
 
 
