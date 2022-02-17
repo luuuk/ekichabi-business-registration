@@ -1,6 +1,6 @@
 package com.ekichabi_business_registration.service;
 
-import com.ekichabi_business_registration.screens.Screen;
+import com.ekichabi_business_registration.screens.stereotype.Screen;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

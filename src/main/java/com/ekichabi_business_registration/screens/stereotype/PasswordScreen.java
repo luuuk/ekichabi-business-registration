@@ -1,4 +1,4 @@
-package com.ekichabi_business_registration.screens;
+package com.ekichabi_business_registration.screens.stereotype;
 
 import org.apache.logging.log4j.util.Strings;
 
