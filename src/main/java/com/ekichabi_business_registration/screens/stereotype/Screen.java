@@ -1,5 +1,6 @@
-package com.ekichabi_business_registration.screens;
+package com.ekichabi_business_registration.screens.stereotype;
 
+import com.ekichabi_business_registration.screens.repository.WelcomeScreenRepository;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public abstract class Screen {
                 welcomeScreenRepository::getError404Screen);
     }
 
-    public abstract Transit doAction(char c);
+    public abstract Screen doAction(char c);
 
     public static SimpleScreen conScreen() {
         return new SimpleScreen(true);

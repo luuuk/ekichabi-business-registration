@@ -1,6 +1,9 @@
-package com.ekichabi_business_registration.screens;
+package com.ekichabi_business_registration.screens.repository;
 
 import com.ekichabi_business_registration.db.entity.AccountEntity;
+import com.ekichabi_business_registration.screens.stereotype.InputScreen;
+import com.ekichabi_business_registration.screens.stereotype.PasswordScreen;
+import com.ekichabi_business_registration.screens.stereotype.Screen;
 import com.ekichabi_business_registration.service.AccountService;
 import com.ekichabi_business_registration.service.InvalidCreationException;
 import lombok.RequiredArgsConstructor;
@@ -9,8 +12,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -93,33 +94,25 @@ public class SignupScreenRepository {
         }
 
         @Override
-        public Transit doAction(char c) {
+        public Screen doAction(char c) {
             switch (c) {
                 case '0':
-                    return new Transit(successScreenRepository.getSuccessScreen(
-                            "Account registration success"
-                    )) {
-                        @Override
-                        public Optional<Screen> doRequest() {
-
-                            AccountEntity accountEntity = AccountEntity.builder()
-                                    .name(username)
-                                    .password(password)
-                                    .build();
-                            try {
-                                accountService.createBusiness(accountEntity);
-                            } catch (InvalidCreationException e) {
-                                return Optional.of(
-                                        errorScreenRepository.getErrorScreen(
-                                                "User creation error"));
-                            }
-                            return Optional.empty();
-                        }
-                    };
+                    AccountEntity accountEntity = AccountEntity.builder()
+                            .name(username)
+                            .password(password)
+                            .build();
+                    try {
+                        accountService.createBusiness(accountEntity);
+                    } catch (InvalidCreationException e) {
+                        return errorScreenRepository.getErrorScreen(
+                                "User creation error");
+                    }
+                    return successScreenRepository.getSuccessScreen(
+                            "Account registration success");
                 case '1':
-                    return new PureTransit(welcomeScreenRepository.getWelcomeScreen());
+                    return welcomeScreenRepository.getWelcomeScreen();
                 default:
-                    return new PureTransit(this);
+                    return this;
             }
 
         }

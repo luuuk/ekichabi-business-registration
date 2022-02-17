@@ -1,6 +1,6 @@
 package com.ekichabi_business_registration.controller;
 
-import com.ekichabi_business_registration.screens.WelcomeScreenRepository;
+import com.ekichabi_business_registration.screens.repository.WelcomeScreenRepository;
 import com.ekichabi_business_registration.service.Session;
 import com.ekichabi_business_registration.service.SessionService;
 import lombok.RequiredArgsConstructor;
@@ -44,8 +44,7 @@ public class CommonController {
                 return welcomeScreenRepository.getError404Screen().toString();
             }
             session.setCommand(command);
-            val transit = session.getScreen().doAction(command.charAt(command.length() - 1));
-            val screen = transit.doRequest().orElse(transit.getScreen());
+            val screen = session.getScreen().doAction(command.charAt(command.length() - 1));
             session.setScreen(screen);
         } else {
             if (!command.equals("")) {

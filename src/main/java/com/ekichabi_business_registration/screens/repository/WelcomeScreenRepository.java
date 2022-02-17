@@ -1,5 +1,6 @@
-package com.ekichabi_business_registration.screens;
+package com.ekichabi_business_registration.screens.repository;
 
+import com.ekichabi_business_registration.screens.stereotype.Screen;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 

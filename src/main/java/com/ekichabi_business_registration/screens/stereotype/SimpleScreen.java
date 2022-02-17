@@ -1,4 +1,4 @@
-package com.ekichabi_business_registration.screens;
+package com.ekichabi_business_registration.screens.stereotype;
 
 import lombok.Getter;
 
@@ -10,12 +10,12 @@ public class SimpleScreen extends Screen {
         super(shouldContinue);
     }
 
-    public final Transit doAction(char c) {
+    public final Screen doAction(char c) {
         Screen screen;
         for (Action action: actions) {
             screen = action.apply(c);
             if (screen != null) {
-                return new PureTransit(screen);
+                return screen;
             }
         }
         return null;

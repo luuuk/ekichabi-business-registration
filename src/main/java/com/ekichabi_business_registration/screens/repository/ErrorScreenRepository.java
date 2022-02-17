@@ -1,5 +1,6 @@
-package com.ekichabi_business_registration.screens;
+package com.ekichabi_business_registration.screens.repository;
 
+import com.ekichabi_business_registration.screens.stereotype.Screen;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -31,14 +32,14 @@ public class ErrorScreenRepository {
         }
 
         @Override
-        public Transit doAction(char c) {
+        public Screen doAction(char c) {
             if (c == '9') {
                 count++;
                 if (count == 2) {
-                    return new PureTransit(welcomeScreenRepository.getWelcomeScreen());
+                    return welcomeScreenRepository.getWelcomeScreen();
                 }
             }
-            return new PureTransit(this);
+            return this;
         }
     }
 }

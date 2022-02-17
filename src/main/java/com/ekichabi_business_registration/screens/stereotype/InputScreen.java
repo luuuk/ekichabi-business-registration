@@ -1,4 +1,4 @@
-package com.ekichabi_business_registration.screens;
+package com.ekichabi_business_registration.screens.stereotype;
 
 import lombok.AccessLevel;
 import lombok.Getter;
