@@ -3,7 +3,6 @@ package com.ekichabi_business_registration.service;
 
 import com.ekichabi_business_registration.screens.stereotype.Screen;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -39,11 +38,14 @@ public class SessionService {
         Session session;
         if (this.contains(id)) {
             session = get(id);
-            if (session.getCommand().length() + 1 != command.length()) {
+            if (!command.startsWith(session.getCommand())) {
                 throw new IllegalArgumentException("Inconsistent command history");
             }
+            Screen screen = session.getScreen();
+            for (int i = session.getCommand().length(); i < command.length(); i++) {
+                screen = screen.doAction(command.charAt(i));
+            }
             session.setCommand(command);
-            val screen = session.getScreen().doAction(command.charAt(command.length() - 1));
             session.setScreen(screen);
         } else {
             if (!command.equals("")) {
