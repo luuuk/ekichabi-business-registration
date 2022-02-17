@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Session {
-    private Long id;
+    private String id;
     private Screen screen;
     private String command;
 }
