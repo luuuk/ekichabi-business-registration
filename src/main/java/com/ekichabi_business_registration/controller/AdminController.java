@@ -22,17 +22,32 @@ public class AdminController {
     private final CategoryService service;
 
     /**
-     * Creates categories based on the contents of Categories.txt in the resources/static directory
+     * Creates categories based on the contents of census_full.csv in the resources/static directory
      **/
     @PostMapping("categories")
-    public ResponseEntity<?> createCategoriesAndSubcategories() {
+    public ResponseEntity<?> createCategories() {
         logger.info("Creating categories from Categories.txt");
         try {
-            service.createCategories();
-            return ResponseEntity.ok().body("Created categories");
+            int createdCount = service.createCategories();
+            return ResponseEntity.ok().body("Created " + createdCount +" new categories");
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body("Could not create categories");
+        }
+    }
+
+    /**
+     * Creates subcategories based on the contents of census_full.csv in the resources/static directory
+     **/
+    @PostMapping("subcategories")
+    public ResponseEntity<?> createSubcategories() {
+        logger.info("Creating subcategories from Categories.txt");
+        try {
+            int createdCount = service.createSubcategories();
+            return ResponseEntity.ok().body("Created " + createdCount +" new subcategories");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body("Could not create subcategories");
         }
     }
 
