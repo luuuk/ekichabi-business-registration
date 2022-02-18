@@ -19,16 +19,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Transactional
 public class AdminController {
-    private static final String password = "supersecretpassword";
+    private static final String PASSWORD = "supersecretpassword";
     private final Logger logger = LoggerFactory.getLogger(BusinessController.class);
     private final CategoryService service;
 
     /**
-     * Creates categories based on the contents of census_full.csv in the resources/static directory
+     * Creates categories based on the contents of census_full.csv
+     * in the resources/static directory
      **/
     @PostMapping("categories/{auth}")
     public ResponseEntity<?> createCategories(@PathVariable String auth) {
-        if (!auth.equals(password)) {
+        if (!auth.equals(PASSWORD)) {
             return ResponseEntity.badRequest()
                     .body("Admin user not authenticated");
         }
@@ -43,11 +44,12 @@ public class AdminController {
     }
 
     /**
-     * Creates subcategories based on the contents of census_full.csv in the resources/static directory
+     * Creates subcategories based on the contents of census_full.csv
+     * in the resources/static directory
      **/
     @PostMapping("subcategories/{auth}")
     public ResponseEntity<?> createSubcategories(@PathVariable String auth) {
-        if (!auth.equals(password)) {
+        if (!auth.equals(PASSWORD)) {
             return ResponseEntity.badRequest()
                     .body("Admin user not authenticated");
         }
