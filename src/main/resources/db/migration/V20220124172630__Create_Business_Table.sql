@@ -1,8 +1,8 @@
 CREATE TABLE business
 (
-    id  BIGSERIAL NOT NULL
+    id   BIGSERIAL NOT NULL
         CONSTRAINT business_pk
-        PRIMARY KEY,
+            PRIMARY KEY,
 
     name TEXT
 )

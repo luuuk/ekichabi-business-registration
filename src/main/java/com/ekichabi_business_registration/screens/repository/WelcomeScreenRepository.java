@@ -13,26 +13,6 @@ public class WelcomeScreenRepository {
         return null;
     }
 
-    public Screen getBusinessOperationSelectScreen() {
-        return Screen.conScreen()
-                        .line("Would you like to ...")
-                        .line("1. Register a business")
-                        .line("2. Edit a business")
-                        .line("3. Delete a business")
-                        .addAction(c -> {
-                            switch (c) {
-                                case "1":
-                                    return getRegisterBusinessScreen();
-                                case "2":
-                                    return getEditBusinessScreen();
-                                case "3":
-                                    return getDeleteBusinessScreen();
-                                default:
-                                    return null;
-                            }
-                        });
-    }
-
     public static Screen getDeleteBusinessScreen() {
         return null;
     }
@@ -43,6 +23,26 @@ public class WelcomeScreenRepository {
 
     public static Screen getRegisterBusinessScreen() {
         return null;
+    }
+
+    public Screen getBusinessOperationSelectScreen() {
+        return Screen.conScreen()
+                .line("Would you like to ...")
+                .line("1. Register a business")
+                .line("2. Edit a business")
+                .line("3. Delete a business")
+                .addAction(c -> {
+                    switch (c) {
+                        case "1":
+                            return getRegisterBusinessScreen();
+                        case "2":
+                            return getEditBusinessScreen();
+                        case "3":
+                            return getDeleteBusinessScreen();
+                        default:
+                            return null;
+                    }
+                });
     }
 
     public Screen getWelcomeScreen() {
@@ -65,11 +65,11 @@ public class WelcomeScreenRepository {
                         default:
                             return null;
                     }
-                        });
+                });
     }
 
     public Screen getError404Screen() {
         return Screen.endScreen()
-                        .line("ERROR Page not found");
+                .line("ERROR Page not found");
     }
 }

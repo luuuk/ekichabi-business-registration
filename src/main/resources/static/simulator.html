@@ -2,27 +2,29 @@
 <html lang="en">
 <body>
 <script>
-    let text = "";
-    let screen = "";
-    // hacky way of generating an id
-    let id = 1000 + Math.round(Math.random() * 1000000);
-    function update(text) {
-        window.fetch("ussd-simulator/?command=" + text + "&id=" + id)
-            .then(response => response.text().then(
-                text => {
-                    screen = text;
-                    document.getElementById("text").textContent = screen
-                }));
+  let text = "";
+  let screen = "";
+  // hacky way of generating an id
+  let id = 1000 + Math.round(Math.random() * 1000000);
+
+  function update(text) {
+    window.fetch("ussd-simulator/?command=" + text + "&id=" + id)
+        .then(response => response.text().then(
+            text => {
+              screen = text;
+              document.getElementById("text").textContent = screen
+            }));
+  }
+
+  update(text);
+  document.addEventListener('keypress', ev => {
+    let code = ev.key
+    if (code.match('^[A-Za-z0-9*]$')) {
+      text = text + code;
+      document.getElementById("input").textContent = text;
+      update(text);
     }
-    update(text);
-    document.addEventListener('keypress', ev => {
-        let code = ev.key
-        if (code.match('^[A-Za-z0-9*]$')) {
-            text = text + code;
-            document.getElementById("input").textContent = text;
-            update(text);
-        }
-    })
+  })
 </script>
 <div id="main"
      style="font-size: 20pt;

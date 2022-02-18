@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Transactional
 public class AdminController {
+    private static final String password = "supersecretpassword";
     private final Logger logger = LoggerFactory.getLogger(BusinessController.class);
     private final CategoryService service;
-    private static final String password = "supersecretpassword";
 
     /**
      * Creates categories based on the contents of census_full.csv in the resources/static directory

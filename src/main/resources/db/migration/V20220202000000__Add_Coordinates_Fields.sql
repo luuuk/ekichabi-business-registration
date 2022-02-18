@@ -1,2 +1,2 @@
 ALTER TABLE business
-ADD COLUMN coordinates TEXT;
+    ADD COLUMN coordinates TEXT;

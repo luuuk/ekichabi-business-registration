@@ -1,1 +1,3 @@
-DELETE FROM business WHERE name = 'Chic-fil-a';
+DELETE
+FROM business
+WHERE name = 'Chic-fil-a';
