@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * This controller should be home to REST endpoints for use by developers/admins (BATCH insert, UPDATE non-business table, etc)
+ * This controller should be home to REST endpoints for use by developers/admins
+ * (BATCH insert, UPDATE non-business table, etc)
  */
 @RestController
 @RequestMapping("admin")
