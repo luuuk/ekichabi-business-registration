@@ -19,13 +19,15 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final SubcategoryRepository subcategoryRepository;
 
+    private static final int SUBSECTOR_V1_COUNT = 4;
+
     public int createCategories() {
         int createdCategories = 0;
         try {
-            CSVReaderHeaderAware CSVReader = new CSVReaderHeaderAware(
+            CSVReaderHeaderAware csvReaderHeaderAware = new CSVReaderHeaderAware(
                     new FileReader("src/main/resources/static/census_full.csv"));
             Map<String, String> v1Entity;
-            while ((v1Entity = CSVReader.readMap()) != null) {
+            while ((v1Entity = csvReaderHeaderAware.readMap()) != null) {
                 if (!categoryRepository.existsByName(v1Entity.get("sector"))) {
                     CategoryEntity newCat = CategoryEntity.builder()
                             .name(v1Entity.get("sector"))
@@ -34,7 +36,7 @@ public class CategoryService {
                     createdCategories++;
                 }
             }
-            CSVReader.close();
+            csvReaderHeaderAware.close();
         } catch (IOException | CsvValidationException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
@@ -45,15 +47,15 @@ public class CategoryService {
     public int createSubcategories() {
         int createdSubcategories = 0;
         try {
-            CSVReaderHeaderAware CSVReader = new CSVReaderHeaderAware(
+            CSVReaderHeaderAware csvReaderHeaderAware = new CSVReaderHeaderAware(
                     new FileReader("src/main/resources/static/census_full.csv"));
             Map<String, String> v1Entity;
-            while ((v1Entity = CSVReader.readMap()) != null) {
+            while ((v1Entity = csvReaderHeaderAware.readMap()) != null) {
                 CategoryEntity parentCategory =
                         categoryRepository.findByName(v1Entity.get("sector"));
-                for (int i = 1; i <= 4; i++) {
-                    if (!v1Entity.get("subsector_eng_" + i).isEmpty() &&
-                            !subcategoryRepository.existsByNameAndCategory(
+                for (int i = 1; i <= SUBSECTOR_V1_COUNT; i++) {
+                    if (!v1Entity.get("subsector_eng_" + i).isEmpty()
+                            && !subcategoryRepository.existsByNameAndCategory(
                                     v1Entity.get("subsector_eng_" + i), parentCategory)) {
 
                         SubcategoryEntity newSubcategory =
@@ -66,7 +68,7 @@ public class CategoryService {
                     }
                 }
             }
-            CSVReader.close();
+            csvReaderHeaderAware.close();
         } catch (IOException | CsvValidationException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
