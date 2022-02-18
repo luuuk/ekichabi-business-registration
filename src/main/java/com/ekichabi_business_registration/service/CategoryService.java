@@ -27,7 +27,9 @@ public class CategoryService {
             Map<String, String> v1Entity;
             while ((v1Entity = CSVReader.readMap()) != null) {
                 if (!categoryRepository.existsByName(v1Entity.get("sector"))) {
-                    CategoryEntity newCat = new CategoryEntity(v1Entity.get("sector"));
+                    CategoryEntity newCat = CategoryEntity.builder()
+                            .name(v1Entity.get("sector"))
+                            .build();
                     categoryRepository.save(newCat);
                     createdCategories++;
                 }
@@ -55,8 +57,10 @@ public class CategoryService {
                                     v1Entity.get("subsector_eng_" + i), parentCategory)) {
 
                         SubcategoryEntity newSubcategory =
-                                new SubcategoryEntity(0, v1Entity.get("subsector_eng_" + i),
-                                        parentCategory);
+                                SubcategoryEntity.builder()
+                                        .name(v1Entity.get("subsector_eng_" + i))
+                                        .category(parentCategory)
+                                        .build();
                         subcategoryRepository.save(newSubcategory);
                         createdSubcategories++;
                     }

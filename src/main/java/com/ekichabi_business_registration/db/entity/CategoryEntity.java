@@ -33,10 +33,6 @@ public class CategoryEntity {
 
     private String name;
 
-    public CategoryEntity(String name) {
-        this.name = name;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
