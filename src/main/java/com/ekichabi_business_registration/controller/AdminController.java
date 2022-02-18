@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,16 +21,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
     private final Logger logger = LoggerFactory.getLogger(BusinessController.class);
     private final CategoryService service;
+    private static final String password = "supersecretpassword";
 
     /**
      * Creates categories based on the contents of census_full.csv in the resources/static directory
      **/
-    @PostMapping("categories")
-    public ResponseEntity<?> createCategories() {
+    @PostMapping("categories/{auth}")
+    public ResponseEntity<?> createCategories(@PathVariable String auth) {
+        if (!auth.equals(password)) {
+            return ResponseEntity.badRequest()
+                    .body("Admin user not authenticated");
+        }
         logger.info("Creating categories from Categories.txt");
         try {
             int createdCount = service.createCategories();
-            return ResponseEntity.ok().body("Created " + createdCount +" new categories");
+            return ResponseEntity.ok().body("Created " + createdCount + " new categories");
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body("Could not create categories");
@@ -39,12 +45,16 @@ public class AdminController {
     /**
      * Creates subcategories based on the contents of census_full.csv in the resources/static directory
      **/
-    @PostMapping("subcategories")
-    public ResponseEntity<?> createSubcategories() {
+    @PostMapping("subcategories/{auth}")
+    public ResponseEntity<?> createSubcategories(@PathVariable String auth) {
+        if (!auth.equals(password)) {
+            return ResponseEntity.badRequest()
+                    .body("Admin user not authenticated");
+        }
         logger.info("Creating subcategories from Categories.txt");
         try {
             int createdCount = service.createSubcategories();
-            return ResponseEntity.ok().body("Created " + createdCount +" new subcategories");
+            return ResponseEntity.ok().body("Created " + createdCount + " new subcategories");
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body("Could not create subcategories");
