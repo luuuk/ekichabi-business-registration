@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class WelcomeScreenRepository {
     private final SignupScreenRepository signupScreenRepository;
+    private final SignInScreenRepository signInScreenRepository;
 
     public static Screen getBrowseBusinessScreen() {
         return null;
