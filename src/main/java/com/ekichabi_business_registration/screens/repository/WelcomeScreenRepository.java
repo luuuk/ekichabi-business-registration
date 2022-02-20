@@ -22,10 +22,11 @@ public class WelcomeScreenRepository {
                         .line("3. Delete a business")
                         .addAction(c -> {
                             switch (c) {
-                                case '1':
+                                case "1":
                                     return getRegisterBusinessScreen();
-                                case '2': return getEditBusinessScreen();
-                                case '3':
+                                case "2":
+                                    return getEditBusinessScreen();
+                                case "3":
                                     return getDeleteBusinessScreen();
                                 default:
                                     return null;
@@ -46,23 +47,25 @@ public class WelcomeScreenRepository {
     }
 
     public Screen getWelcomeScreen() {
-        return
-                Screen.conScreen()
-                        .line("Welcome to ekichabi 2.0!")
-                        .line("Would you like to ...")
-                        .line("1. Browse business")
-                        .line("2. Sign in")
-                        .line("3. Sign up")
-                        .addAction(c -> {
-                            switch (c) {
-                                case '1': return getBrowseBusinessScreen();
-                                case '2':
-                                    return signInScreenRepository.getSignInScreen();
-                                case '3':
-                                    return signupScreenRepository.getSignupScreen();
-                                default:
-                                    return null;
-                            }
+        return Screen.conScreen()
+                .line("Welcome to ekichabi 2.0!")
+                .line("Would you like to ...")
+                .line("1. Browse business")
+                .line("2. Sign in")
+                .line("3. Sign up")
+                .addAction(c -> {
+                    switch (c) {
+                        case "1":
+                            return getBrowseBusinessScreen();
+                        case "2":
+                            // TODO Actually, we need to login before
+                            //  doing operation selection
+                            return getBusinessOperationSelectScreen();
+                        case "3":
+                            return signupScreenRepository.getSignupScreen();
+                        default:
+                            return null;
+                    }
                         });
     }
 

@@ -1,18 +1,16 @@
 package com.ekichabi_business_registration.controller;
 
+import com.ekichabi_business_registration.controller.request.UssdRequest;
 import com.ekichabi_business_registration.screens.repository.WelcomeScreenRepository;
 import com.ekichabi_business_registration.service.Session;
 import com.ekichabi_business_registration.service.SessionService;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.swing.ImageIcon;
+import javax.swing.*;
 
 @RestController
 @RequestMapping("")
@@ -32,28 +30,25 @@ public class CommonController {
     }
 
     @GetMapping("ussd-simulator")
-    public String ussdSimulator(Long id, String command) {
-        final Session session;
-
-        if (sessionService.contains(id)) {
-            if (command.equals((""))) {
-                return welcomeScreenRepository.getError404Screen().toString();
-            }
-            session = sessionService.get(id);
-            if (session.getCommand().length() + 1 != command.length()) {
-                return welcomeScreenRepository.getError404Screen().toString();
-            }
-            session.setCommand(command);
-            val screen = session.getScreen().doAction(command.charAt(command.length() - 1));
-            session.setScreen(screen);
-        } else {
-            if (!command.equals("")) {
-                // fresh command should correspond to fresh session
-                return welcomeScreenRepository.getError404Screen().toString();
-            }
-            session = new Session(id, welcomeScreenRepository.getWelcomeScreen(), command);
-            sessionService.put(id, session);
+    public String ussdSimulator(String id, String command) {
+        try {
+            final Session session = sessionService.getSessionFromIdAndCommand(
+                    id, command, welcomeScreenRepository::getWelcomeScreen);
+            return session.getScreen().toString();
+        } catch (IllegalArgumentException e) {
+            return welcomeScreenRepository.getError404Screen().toString();
         }
-        return session.getScreen().toString();
+    }
+
+    @PostMapping("ussd")
+    public String ussdEntryPoint(@ModelAttribute UssdRequest request) {
+        try {
+            final Session session = sessionService.getSessionFromIdAndCommand(
+                    request.getSessionId(), request.getText(),
+                    welcomeScreenRepository::getWelcomeScreen);
+            return session.getScreen().toString();
+        } catch (IllegalArgumentException e) {
+            return welcomeScreenRepository.getError404Screen().toString();
+        }
     }
 }
