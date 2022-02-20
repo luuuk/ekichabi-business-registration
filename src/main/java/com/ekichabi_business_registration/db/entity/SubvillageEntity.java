@@ -35,7 +35,7 @@ public class SubvillageEntity {
     @ToString.Include
     private String name;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne()
     @ToString.Include
     private VillageEntity village;
 
