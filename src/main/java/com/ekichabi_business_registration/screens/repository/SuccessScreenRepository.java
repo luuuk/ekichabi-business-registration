@@ -29,16 +29,17 @@ public class SuccessScreenRepository {
             this.reason = reason;
             line("Success");
             line(reason);
-            line("99. Back");
+            line("99. Continue");
         }
 
         @Override
         public Screen doAction(char c) {
-            if (c == '9') {
-                count++;
+            if (c == '*') {
                 if (count == 2) {
-                    return welcomeScreenRepository.getWelcomeScreen();
+                    return welcomeScreenRepository.getSignedInWelcomScreen();
                 }
+            } else if (c == '9') {
+                count++;
             }
             return this;
         }
