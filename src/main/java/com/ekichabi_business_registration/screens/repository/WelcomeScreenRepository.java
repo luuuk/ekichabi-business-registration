@@ -58,9 +58,7 @@ public class WelcomeScreenRepository {
                         case "1":
                             return getBrowseBusinessScreen();
                         case "2":
-                            // TODO Actually, we need to login before
-                            //  doing operation selection
-                            return getBusinessOperationSelectScreen();
+                            return signInScreenRepository.getSignInScreen();
                         case "3":
                             return signupScreenRepository.getSignupScreen();
                         default:
