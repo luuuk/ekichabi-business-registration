@@ -1,9 +1,9 @@
 CREATE TABLE account
 (
-    id BIGSERIAL NOT NULL
+    id       BIGSERIAL NOT NULL
         CONSTRAINT account_pk PRIMARY KEY,
 
-    name TEXT NOT NULL UNIQUE,
+    name     TEXT      NOT NULL UNIQUE,
 
     password TEXT
 
@@ -12,5 +12,5 @@ CREATE TABLE account
 create TABLE business_account
 (
     business_id BIGINT REFERENCES business (id),
-    account_id BIGINT REFERENCES account (id)
+    account_id  BIGINT REFERENCES account (id)
 );
