@@ -22,6 +22,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -78,6 +79,9 @@ public class BusinessEntity {
             inverseJoinColumns = @JoinColumn(name = "ACCOUNT_ID", referencedColumnName = "ID"))
     @Singular
     private List<AccountEntity> owners;
+
+    @OneToMany(mappedBy = "businessEntity")
+    private List<PhoneNumberEntity> phoneNumbers;
 
     @Override
     public boolean equals(Object o) {
