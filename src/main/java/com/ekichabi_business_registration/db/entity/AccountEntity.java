@@ -35,12 +35,15 @@ public class AccountEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @ToString.Include
+    @JsonIgnore
     private Long id;
 
     @ToString.Include
     @Column(unique = true)
+    @JsonIgnore
     private String name;
 
+    @JsonIgnore
     private String password;
 
     @CreatedDate

@@ -31,6 +31,7 @@ public class DistrictEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @ToString.Include
+    @JsonIgnore
     private Integer id;
 
     @ToString.Include
