@@ -1,0 +1,2 @@
+CREATE SEQUENCE IF NOT EXISTS hibernate_sequence
+    START 1 INCREMENT 1;

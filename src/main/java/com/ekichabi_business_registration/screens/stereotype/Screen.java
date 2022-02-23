@@ -16,24 +16,16 @@ import java.util.Objects;
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public abstract class Screen {
-    @Setter(onMethod = @__({@Autowired}), onParam = @__({@Lazy}))
-    private WelcomeScreenRepository welcomeScreenRepository;
-
     @Getter
     private final List<StringBuilder> lines = new ArrayList<>();
     private final boolean shouldContinue;
+    @Setter(onMethod = @__({@Autowired}), onParam = @__({@Lazy}))
+    private WelcomeScreenRepository welcomeScreenRepository;
     private Screen fallbackScreen;
 
     protected Screen(boolean shouldContinue) {
         this.shouldContinue = shouldContinue;
     }
-
-    public Screen getFallbackScreen() {
-        return Objects.requireNonNullElseGet(fallbackScreen,
-                welcomeScreenRepository::getError404Screen);
-    }
-
-    public abstract Screen doAction(char c);
 
     public static SimpleScreen conScreen() {
         return new SimpleScreen(true);
@@ -42,6 +34,13 @@ public abstract class Screen {
     public static SimpleScreen endScreen() {
         return new SimpleScreen(false);
     }
+
+    public Screen getFallbackScreen() {
+        return Objects.requireNonNullElseGet(fallbackScreen,
+                welcomeScreenRepository::getError404Screen);
+    }
+
+    public abstract Screen doAction(char c);
 
     public Screen fallbackScreen(Screen screen) {
         fallbackScreen = screen;
@@ -67,7 +66,7 @@ public abstract class Screen {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(shouldContinue ? "CON " : "END ");
-        for (StringBuilder line: lines) {
+        for (StringBuilder line : lines) {
             sb.append(line).append('\n');
         }
         return sb.toString();
