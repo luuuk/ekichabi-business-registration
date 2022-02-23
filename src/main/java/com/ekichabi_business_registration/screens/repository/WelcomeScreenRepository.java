@@ -1,5 +1,6 @@
 package com.ekichabi_business_registration.screens.repository;
 
+import com.ekichabi_business_registration.db.entity.AccountEntity;
 import com.ekichabi_business_registration.screens.stereotype.Screen;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -68,7 +69,7 @@ public class WelcomeScreenRepository {
                 });
     }
 
-    public Screen getSignedInWelcomeScreen() {
+    public Screen getSignedInWelcomeScreen(AccountEntity accountEntity) {
         return Screen.conScreen()
                 .line("1. Browse")
                 .line("2. Create business")
@@ -83,7 +84,8 @@ public class WelcomeScreenRepository {
                                     .line("This workflow is unfinished");
                         case "2":
                             // TODO: add create business functionality
-                            return businessCreationScreenRepository.getBusinessCreationScreen();
+                            return businessCreationScreenRepository
+                                    .getBusinessCreationScreen(accountEntity);
                         case "3":
                             // TODO: add update business functionality
                             return Screen.conScreen()
@@ -97,7 +99,7 @@ public class WelcomeScreenRepository {
                             return Screen.conScreen()
                                     .line("This workflow is unfinished");
                         default:
-                            return getSignedInWelcomeScreen();
+                            return getSignedInWelcomeScreen(accountEntity);
 
                     }
                 });
