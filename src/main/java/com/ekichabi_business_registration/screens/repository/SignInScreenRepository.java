@@ -13,7 +13,7 @@ public class SignInScreenRepository {
     private final AccountService accountService;
     private final ErrorScreenRepository errorScreenRepository;
     private final SuccessScreenRepository successScreenRepository;
-    
+
     Screen getSignInScreen() {
         return new SignInScreen();
     }
@@ -44,7 +44,7 @@ public class SignInScreenRepository {
             val accountEntityOptional = accountService.login(username, password);
             if (accountEntityOptional.isPresent()) {
                 return successScreenRepository.getSuccessScreen(
-                    "Login sucessful");
+                        "Login sucessful");
             } else {
                 return errorScreenRepository.getErrorScreen("Login failed");
             }
