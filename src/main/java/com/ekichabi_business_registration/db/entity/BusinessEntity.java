@@ -1,5 +1,6 @@
 package com.ekichabi_business_registration.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,18 +13,9 @@ import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,6 +32,7 @@ public class BusinessEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @ToString.Include
+    @JsonIgnore
     private Long id;
 
     @ToString.Include
@@ -53,10 +46,10 @@ public class BusinessEntity {
     @JoinTable(name = "BUSINESS_TO_SUBCATEGORY",
             joinColumns = @JoinColumn(name = "BUSINESS_ID", referencedColumnName = "ID"),
             inverseJoinColumns = @JoinColumn(name = "SUBCATEGORY_ID", referencedColumnName = "ID"))
-    @Singular
-    private List<SubcategoryEntity> subcategories;
+    @Builder.Default
+    private List<SubcategoryEntity> subcategories = new ArrayList<>();
 
-    @ManyToOne()
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "SUBVILLAGE_ID")
     private SubvillageEntity subvillage;
 
@@ -72,15 +65,16 @@ public class BusinessEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @ManyToMany()
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "BUSINESS_ACCOUNT",
             joinColumns = @JoinColumn(name = "BUSINESS_ID", referencedColumnName = "ID"),
             inverseJoinColumns = @JoinColumn(name = "ACCOUNT_ID", referencedColumnName = "ID"))
-    @Singular
-    private List<AccountEntity> owners;
+    @Builder.Default
+    private List<AccountEntity> owners = new ArrayList<>();
 
-    @OneToMany(mappedBy = "businessEntity")
-    private List<PhoneNumberEntity> phoneNumbers;
+    @ElementCollection
+    @Builder.Default
+    private List<String> phoneNumbers = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

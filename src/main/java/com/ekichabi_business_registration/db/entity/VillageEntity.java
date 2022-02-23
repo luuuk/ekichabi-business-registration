@@ -1,6 +1,7 @@
 package com.ekichabi_business_registration.db.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,7 @@ public class VillageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @ToString.Include
+    @JsonIgnore
     private Integer id;
 
     @ToString.Include
