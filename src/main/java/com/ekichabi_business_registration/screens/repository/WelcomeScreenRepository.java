@@ -68,7 +68,7 @@ public class WelcomeScreenRepository {
                 });
     }
 
-    public Screen getSignedInWelcomScreen() {
+    public Screen getSignedInWelcomeScreen() {
         return Screen.conScreen()
                 .line("1. Browse")
                 .line("2. Create business")
@@ -97,7 +97,7 @@ public class WelcomeScreenRepository {
                             return Screen.conScreen()
                                     .line("This workflow is unfinished");
                         default:
-                            return null;
+                            return getSignedInWelcomeScreen();
 
                     }
                 });

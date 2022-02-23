@@ -17,6 +17,7 @@ public class SimpleScreen extends Screen {
             for (Action action : actions) {
                 Screen screen = action.apply(buffer.toString());
                 if (screen != null) {
+                    buffer.setLength(0);
                     return screen;
                 }
             }
