@@ -1,5 +1,6 @@
 package com.ekichabi_business_registration.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +12,13 @@ import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Objects;
@@ -28,12 +35,15 @@ public class AccountEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @ToString.Include
+    @JsonIgnore
     private Long id;
 
     @ToString.Include
     @Column(unique = true)
+    @JsonIgnore
     private String name;
 
+    @JsonIgnore
     private String password;
 
     @CreatedDate
@@ -43,7 +53,9 @@ public class AccountEntity {
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
     @ManyToMany(mappedBy = "owners")
+    @JsonIgnore
     private Collection<BusinessEntity> ownedBusinesses;
 
     @Override
