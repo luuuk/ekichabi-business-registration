@@ -10,4 +10,6 @@ public interface VillageRepository extends CrudRepository<VillageEntity, Integer
     boolean existsByNameAndDistrict(String name, DistrictEntity district);
 
     VillageEntity findByNameAndDistrict(String village, DistrictEntity parentDistrict);
+
+    Iterable<VillageEntity> findByDistrict(DistrictEntity district);
 }

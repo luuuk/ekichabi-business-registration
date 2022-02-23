@@ -43,8 +43,8 @@ public class SignInScreenRepository {
         public Screen getNextScreen(String password) {
             val accountEntityOptional = accountService.login(username, password);
             if (accountEntityOptional.isPresent()) {
-                return successScreenRepository.getSuccessScreen(
-                        "Login sucessful");
+                return successScreenRepository.getSignedInSuccessScreen(
+                        "Login successful", accountEntityOptional.get());
             } else {
                 return errorScreenRepository.getErrorScreen("Login failed");
             }

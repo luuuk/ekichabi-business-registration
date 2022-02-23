@@ -46,8 +46,8 @@ public class BusinessEntity {
     @JoinTable(name = "BUSINESS_TO_SUBCATEGORY",
             joinColumns = @JoinColumn(name = "BUSINESS_ID", referencedColumnName = "ID"),
             inverseJoinColumns = @JoinColumn(name = "SUBCATEGORY_ID", referencedColumnName = "ID"))
-    @Singular
-    private List<SubcategoryEntity> subcategories;
+    @Builder.Default
+    private List<SubcategoryEntity> subcategories = new ArrayList<>();
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "SUBVILLAGE_ID")
@@ -69,8 +69,8 @@ public class BusinessEntity {
     @JoinTable(name = "BUSINESS_ACCOUNT",
             joinColumns = @JoinColumn(name = "BUSINESS_ID", referencedColumnName = "ID"),
             inverseJoinColumns = @JoinColumn(name = "ACCOUNT_ID", referencedColumnName = "ID"))
-    @Singular
-    private List<AccountEntity> owners;
+    @Builder.Default
+    private List<AccountEntity> owners = new ArrayList<>();
 
     @ElementCollection
     @Builder.Default

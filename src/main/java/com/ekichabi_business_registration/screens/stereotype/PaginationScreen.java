@@ -13,14 +13,15 @@ public abstract class PaginationScreen extends SimpleScreen {
     private final String title;
     private int currentPage;
 
-    PaginationScreen(List<String> options, String title, int currentPage) {
+    PaginationScreen(List<String> options, String title, int page) {
         super(true);
         this.options = options;
-        this.currentPage = currentPage;
+        this.currentPage = page;
         this.numPages = (options.size() - 1) / NUM_ITEMS + 1;
         this.title = title;
 
         addAction(s -> {
+            System.out.println(">>>" + s + "<<<");
             int i;
             try {
                 i = Integer.parseInt(s);
@@ -28,11 +29,11 @@ public abstract class PaginationScreen extends SimpleScreen {
                 return null;
             }
             if (1 <= i && i <= NUM_ITEMS) {
-                return selected(currentPage * NUM_ITEMS + i - 1);
-            } else if (i == SELECT_NEXT_PAGE && currentPage != numPages - 1) {
+                return selected(this.currentPage * NUM_ITEMS + i - 1);
+            } else if (i == SELECT_NEXT_PAGE && this.currentPage != numPages - 1) {
                 this.currentPage++;
                 return this;
-            } else if (i == SELECT_PREV_PAGE && currentPage != 0) {
+            } else if (i == SELECT_PREV_PAGE && this.currentPage != 0) {
                 this.currentPage--;
                 return this;
             } else {
@@ -51,16 +52,16 @@ public abstract class PaginationScreen extends SimpleScreen {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(title)
-                .append(" (").append(currentPage)
+                .append(" (").append(currentPage + 1)
                 .append("/").append(numPages).append(")")
                 .append("\n");
 
         for (int i = 0; i < NUM_ITEMS; i++) {
             // fill additional lines with "" to make sure the pagination option
             // is at the bottom
-            int index = currentPage * NUM_ITEMS;
+            int index = currentPage * NUM_ITEMS + i;
             if (index < options.size()) {
-                sb.append(i).append(". ").append(options.get(index)).append("\n");
+                sb.append(i + 1).append(". ").append(options.get(index)).append("\n");
             } else {
                 sb.append("\n");
             }

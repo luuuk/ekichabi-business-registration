@@ -4,6 +4,7 @@ import com.ekichabi_business_registration.db.entity.*;
 import com.ekichabi_business_registration.db.repository.CategoryRepository;
 import com.ekichabi_business_registration.db.repository.DistrictRepository;
 import com.ekichabi_business_registration.db.repository.SubcategoryRepository;
+import com.ekichabi_business_registration.db.repository.VillageRepository;
 import com.ekichabi_business_registration.screens.stereotype.PaginationScreen;
 import com.ekichabi_business_registration.service.BusinessService;
 import com.ekichabi_business_registration.screens.stereotype.Screen;
@@ -21,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityManager;
+
 @Component
 @RequiredArgsConstructor
 public class BusinessCreationScreenRepository {
@@ -28,6 +31,7 @@ public class BusinessCreationScreenRepository {
     private final CategoryRepository categoryRepository;
     private final SubcategoryRepository subcategoryRepository;
     private final DistrictRepository districtRepository;
+    private final VillageRepository villageRepository;
 
     @Setter(onMethod = @__({@Autowired}), onParam = @__({@Lazy}))
     private WelcomeScreenRepository welcomeScreenRepository;
@@ -59,8 +63,9 @@ public class BusinessCreationScreenRepository {
             if (businessEntity.getName() == null) {
                 return new BusinessCreationScreen(accountEntity, input);
             } else {
-                businessEntity.setPhoneNumbers(List.of(input));
-                businessEntity.setOwners(List.of(accountEntity));
+                // List.of(...) creates immutable list, which is not what we want.
+                businessEntity.setPhoneNumbers(new ArrayList<>(List.of(input)));
+                businessEntity.setOwners(new ArrayList<>(List.of(accountEntity)));
                 return getSelectCategoryScreen(businessEntity);
             }
         }
@@ -127,7 +132,7 @@ public class BusinessCreationScreenRepository {
     private Screen getSelectVillageScreen(DistrictEntity district, BusinessEntity businessEntity) {
         List<VillageEntity> villages = new ArrayList<>();
         List<String> villageNames = new ArrayList<>();
-        for (val village : district.getVillage()) {
+        for (val village : villageRepository.findByDistrict(district)) {
             villages.add(village);
             villageNames.add(village.getName());
         }
@@ -181,8 +186,9 @@ public class BusinessCreationScreenRepository {
                         return new EnterCoordinateScreen(business, village);
                     case "4":
                         // TODO: actually add the entity
-                        return successScreenRepository.getSuccessScreen("Business creation "
-                                + "successful");
+                        assert business.getOwners().size() == 1;
+                        return successScreenRepository.getSignedInSuccessScreen("Business creation "
+                                + "successful", business.getOwners().get(0));
                     case "5":
                         assert business.getOwners().size() == 1;
                         return welcomeScreenRepository.getSignedInWelcomeScreen(

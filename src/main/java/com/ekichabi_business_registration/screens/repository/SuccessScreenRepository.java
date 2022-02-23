@@ -21,6 +21,10 @@ public class SuccessScreenRepository {
         return new SuccessScreen(reason);
     }
 
+    public Screen getSignedInSuccessScreen(String reason, AccountEntity accountEntity) {
+        return new SignedInSuccessScreen(reason, accountEntity);
+    }
+
     public class SuccessScreen extends SimpleScreen {
         @Getter
         private final String reason;
