@@ -3,10 +3,10 @@
 
 CREATE TABLE business
 (
-    id         BIGSERIAL NOT NULL
+    id            BIGSERIAL NOT NULL
         CONSTRAINT business_pk
             PRIMARY KEY,
-    name       TEXT,
+    name          TEXT,
     category_id   INT REFERENCES category,
     subvillage_id INT REFERENCES subvillage
 );
@@ -21,9 +21,9 @@ CREATE TABLE category
 
 CREATE TABLE subcategory
 (
-    id       SERIAL
+    id          SERIAL
         CONSTRAINT subcategory_pk PRIMARY KEY,
-    name     TEXT,
+    name        TEXT,
     category_id INT NOT NULL
         CONSTRAINT subcategory_category_fk REFERENCES category
 );
@@ -46,10 +46,10 @@ CREATE TABLE district
 
 CREATE TABLE village
 (
-    id       SERIAL NOT NULL
+    id          SERIAL NOT NULL
         CONSTRAINT village_pk
             PRIMARY KEY,
-    name     TEXT,
+    name        TEXT,
     district_id INT    NOT NULL
         CONSTRAINT village_district_fk
             REFERENCES district (id)
@@ -57,11 +57,22 @@ CREATE TABLE village
 
 CREATE TABLE subvillage
 (
-    id      SERIAL NOT NULL
+    id         SERIAL NOT NULL
         CONSTRAINT subvillage_pk
             PRIMARY KEY,
-    name    TEXT,
+    name       TEXT,
     village_id INT    NOT NULL
         CONSTRAINT subvillage_village_fk
             REFERENCES village (id)
 );
+
+CREATE TABLE phone_numbers
+(
+    id   SERIAL NOT NULL
+        CONSTRAINT phone_number_pk
+            PRIMARY KEY,
+    number TEXT
+);
+
+ALTER TABLE business
+    ADD COLUMN phone_number_id INT REFERENCES phone_numbers (id);

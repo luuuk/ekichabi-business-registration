@@ -1,3 +1,5 @@
+import org.flywaydb.gradle.task.FlywayMigrateTask
+
 plugins {
     id 'org.springframework.boot' version '2.6.3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
@@ -26,8 +28,27 @@ dependencies {
     implementation 'org.postgresql:postgresql:42.3.1'
     implementation 'org.springframework.boot:spring-boot-starter-validation:2.6.2'
     implementation 'org.flywaydb:flyway-core:8.4.2'
+    implementation 'com.opencsv:opencsv:5.5.2'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+task migrateTestDb(type: FlywayMigrateTask) {
+    url = 'jdbc:postgresql://localhost:5432/postgres'
+    user = 'postgres'
+    password = 'postgres'
+}
+
+task migrateDevDb(type: FlywayMigrateTask) {
+    url = 'jdbc:postgresql://localhost:5432/ekichabi'
+    user = 'ekichabi'
+    password = 'ekichabi'
+}
+
+//task migrateProdDb(type: FlywayMigrateTask) {
+//    url = spring.datasource.url
+//    user = 'ekichabi'
+//    password = 'ekichabi'
+//}

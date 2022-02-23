@@ -27,7 +27,7 @@ public abstract class InputScreen extends Screen {
 
     @Override
     public String toString() {
-        return super.toString() + sb.toString() + "\n";
+        return super.toString() + sb + "\n";
     }
 
     public abstract Screen getNextScreen(String s);

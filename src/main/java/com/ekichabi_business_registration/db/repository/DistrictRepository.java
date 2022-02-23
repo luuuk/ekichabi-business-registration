@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DistrictRepository extends CrudRepository<DistrictEntity, Integer> {
+    boolean existsByName(String name);
+
+    DistrictEntity findByName(String name);
 }
