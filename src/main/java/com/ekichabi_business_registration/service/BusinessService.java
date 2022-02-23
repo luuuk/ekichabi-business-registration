@@ -40,8 +40,8 @@ public class BusinessService {
             AccountEntity.builder()
                     .name("V1_ADMIN")
                     .password("V1_ADMIN")
-                    .createdAt(LocalDateTime.MIN)
-                    .updatedAt(LocalDateTime.MIN)
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
                     .build();
     private static final int PHONE_NUMBERS_V1_COUNT = 3;
 
@@ -121,8 +121,8 @@ public class BusinessService {
                                     .category(category)
                                     .owner(v1AdminAccount)
                                     .phoneNumbers(phoneNumbers)
-                                    .createdAt(LocalDateTime.MIN)
-                                    .updatedAt(LocalDateTime.MIN)
+                                    .createdAt(LocalDateTime.now())
+                                    .updatedAt(LocalDateTime.now())
                                     .build();
                     businessRepository.save(entity);
                     created++;
