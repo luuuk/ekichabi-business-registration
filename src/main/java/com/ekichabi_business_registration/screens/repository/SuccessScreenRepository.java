@@ -36,7 +36,7 @@ public class SuccessScreenRepository {
         public Screen doAction(char c) {
             if (c == '*') {
                 if (count == 2) {
-                    return welcomeScreenRepository.getSignedInWelcomScreen();
+                    return welcomeScreenRepository.getSignedInWelcomeScreen();
                 }
             } else if (c == '9') {
                 count++;

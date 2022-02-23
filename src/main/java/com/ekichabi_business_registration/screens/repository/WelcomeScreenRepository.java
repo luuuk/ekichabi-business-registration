@@ -69,7 +69,7 @@ public class WelcomeScreenRepository {
                         });
     }
 
-    public Screen getSignedInWelcomScreen() {
+    public Screen getSignedInWelcomeScreen() {
         return Screen.conScreen()
                 .line("1. Browse")
                 .line("2. Create business")
