@@ -13,7 +13,7 @@ public class SignInScreenRepository {
     private final AccountService accountService;
     private final ErrorScreenRepository errorScreenRepository;
     private final SuccessScreenRepository successScreenRepository;
-    
+
     Screen getSignInScreen() {
         return new SignInScreen();
     }

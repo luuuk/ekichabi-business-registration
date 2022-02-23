@@ -55,7 +55,6 @@ public class SignupScreenRepository {
 
         SignupScreenPassword(String username, String password) {
             super();
-            // TODO: check that username is not already taken? 
             this.username = username;
             this.password = password;
             line("Sign up - confirm password");

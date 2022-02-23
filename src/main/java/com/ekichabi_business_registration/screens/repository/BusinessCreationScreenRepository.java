@@ -4,17 +4,14 @@ import com.ekichabi_business_registration.service.BusinessService;
 import com.ekichabi_business_registration.screens.stereotype.Screen;
 import com.ekichabi_business_registration.screens.stereotype.SimpleScreen;
 
-import java.util.Locale.Category;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ekichabi_business_registration.db.entity.BusinessEntity;
 import com.ekichabi_business_registration.db.entity.CategoryEntity;
 import com.ekichabi_business_registration.screens.stereotype.InputScreen;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.apache.logging.log4j.util.Strings;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -109,28 +106,28 @@ public class BusinessCreationScreenRepository {
       addAction(s -> {
         switch (s) {
           case "1":
-            return new CreateBusinessConfirmationScreen(name, phone, district, village, 
+            return new CreateBusinessConfirmationScreen(name, phone, district, village,
             "*", "Agri Processing", new ArrayList<>(), null);
           case "2":
-            return new CreateBusinessConfirmationScreen(name, phone, district, village, 
+            return new CreateBusinessConfirmationScreen(name, phone, district, village,
             "*", "Financial Services", new ArrayList<>(), null);
           case "3":
-            return new CreateBusinessConfirmationScreen(name, phone, district, village, 
+            return new CreateBusinessConfirmationScreen(name, phone, district, village,
             "*", "Hiring and Labor", new ArrayList<>(), null);
           case "4":
-            return new CreateBusinessConfirmationScreen(name, phone, district, village, 
+            return new CreateBusinessConfirmationScreen(name, phone, district, village,
             "*", "Merchant/Retail", new ArrayList<>(), null);
           case "5":
-            return new CreateBusinessConfirmationScreen(name, phone, district, village, 
+            return new CreateBusinessConfirmationScreen(name, phone, district, village,
             "*", "Non-Agri Services", new ArrayList<>(), null);
           case "6":
-            return new CreateBusinessConfirmationScreen(name, phone, district, village, 
+            return new CreateBusinessConfirmationScreen(name, phone, district, village,
             "*", "Repairs", new ArrayList<>(), null);
           case "7":
-            return new CreateBusinessConfirmationScreen(name, phone, district, village, 
+            return new CreateBusinessConfirmationScreen(name, phone, district, village,
             "*", "Trading and Wholesale", new ArrayList<>(), null);
           case "8":
-            return new CreateBusinessConfirmationScreen(name, phone, district, village, 
+            return new CreateBusinessConfirmationScreen(name, phone, district, village,
             "*", "Transport", new ArrayList<>(), null);
           default:
             return this;
@@ -170,24 +167,25 @@ public class BusinessCreationScreenRepository {
       line("5. Cancel creation");
       addAction(s -> {
         switch (s) {
-          case "1": 
-            if (subcategories.size() < 3){
-              return new SelectSubcategoryScreen(this.name, this.phone, this.district, this.village, 
-              this.subvillage, this.category, this.subcategories, this.coordinates);
+          case "1":
+            if (subcategories.size() < 3) {
+              return new SelectSubcategoryScreen(this.name, this.phone, this.district, 
+              this.village, this.subvillage, this.category, this.subcategories,
+              this.coordinates);
             } else {
               // TODO: fix this screen to actually be informative
               return this;
             }
-          case "2": 
-            return new EnterSubvillageScreen(this.name, this.phone, this.district, this.village, 
+          case "2":
+            return new EnterSubvillageScreen(this.name, this.phone, this.district, this.village,
             this.subvillage, this.category, this.subcategories, this.coordinates);
-          case "3": 
-            return new EnterCoordinateScreen(this.name, this.phone, this.district, this.village, 
+          case "3":
+            return new EnterCoordinateScreen(this.name, this.phone, this.district, this.village,
             this.subvillage, this.category, this.subcategories, this.coordinates);
-          case "4": 
+          case "4":
             // TODO: actually add the entity
             return successScreenRepository.getSuccessScreen("Business creation successful");
-          case "5": 
+          case "5":
             return welcomeScreenRepository.getSignedInWelcomeScreen();
           default:
             return this;
