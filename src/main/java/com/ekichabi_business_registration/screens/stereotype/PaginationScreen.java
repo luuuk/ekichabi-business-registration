@@ -41,7 +41,7 @@ public abstract class PaginationScreen extends SimpleScreen {
         });
     }
 
-    PaginationScreen(List<String> options, String title) {
+    public PaginationScreen(List<String> options, String title) {
         this(options, title, 0);
     }
 
