@@ -79,7 +79,7 @@ public class BusinessCreationScreenRepository {
       } else if (this.district == null) {
         return new BusinessCreationScreen(this.name, this.phone, input);
       } else {
-        return new CategorySelectionScreen(this.name, this.phone, this.district, input, 1);
+        return new CategorySelectionScreen(this.name, this.phone, this.district, input);
       }
     }
   }
@@ -90,47 +90,48 @@ public class BusinessCreationScreenRepository {
     private final String district;
     private final String village;
 
-    CategorySelectionScreen(String name, String phone, String district, String village, int page) {
+    CategorySelectionScreen(String name, String phone, String district, String village) {
       super(true);
       this.name = name;
       this.phone = phone;
       this.district = district;
       this.village = village;
-      if (page == 1) {
-        line("Select category");
-        line("1. Agri Processing");
-        line("2. Financial Services");
-        line("3. Hiring and Labor");
-        line("4. Merchant/Retail");
-        line("9. Next Page");
-      } else {
-        line("5. Non-Agri Services");
-        line("6. Repairs");
-        line("7. Trading and Wholesale");
-        line("8. Transport");
-        line("0. Previous Page");
-      }
-
+      line("Select category");
+      line("1. Agri Processing");
+      line("2. Financial Services");
+      line("3. Hiring and Labor");
+      line("4. Merchant/Retail");
+      line("5. Non-Agri Services");
+      line("6. Repairs");
+      line("7. Trading and Wholesale");
+      line("8. Transport");
+      // TODO: pagination
       addAction(s -> {
         switch (s) {
           case "1":
-            return new CreateBusinessConfirmationScreen(name, phone, district, village, "*", "Agri Processing", new ArrayList<>(), null);
+            return new CreateBusinessConfirmationScreen(name, phone, district, village, 
+            "*", "Agri Processing", new ArrayList<>(), null);
           case "2":
-            return new CreateBusinessConfirmationScreen(name, phone, district, village,"*", "Financial Services", new ArrayList<>(), null);
+            return new CreateBusinessConfirmationScreen(name, phone, district, village, 
+            "*", "Financial Services", new ArrayList<>(), null);
           case "3":
-            return new CreateBusinessConfirmationScreen(name, phone, district, village,"*", "Hiring and Labor", new ArrayList<>(), null);
+            return new CreateBusinessConfirmationScreen(name, phone, district, village, 
+            "*", "Hiring and Labor", new ArrayList<>(), null);
           case "4":
-            return new CreateBusinessConfirmationScreen(name, phone, district, village,"*", "Merchant/Retail", new ArrayList<>(), null);
+            return new CreateBusinessConfirmationScreen(name, phone, district, village, 
+            "*", "Merchant/Retail", new ArrayList<>(), null);
           case "5":
-            return new CreateBusinessConfirmationScreen(name, phone, district, village,"*", "Non-Agri Services", new ArrayList<>(), null);
+            return new CreateBusinessConfirmationScreen(name, phone, district, village, 
+            "*", "Non-Agri Services", new ArrayList<>(), null);
           case "6":
-            return new CreateBusinessConfirmationScreen(name, phone, district, village,"*", "Repairs", new ArrayList<>(), null);
+            return new CreateBusinessConfirmationScreen(name, phone, district, village, 
+            "*", "Repairs", new ArrayList<>(), null);
           case "7":
-            return new CreateBusinessConfirmationScreen(name, phone, district, village,"*", "Trading and Wholesale", new ArrayList<>(), null);
+            return new CreateBusinessConfirmationScreen(name, phone, district, village, 
+            "*", "Trading and Wholesale", new ArrayList<>(), null);
           case "8":
-            return new CreateBusinessConfirmationScreen(name, phone, district, village,"*", "Transport", new ArrayList<>(), null);
-          case "9": return new CategorySelectionScreen(name, phone, district, village, 0);
-          case "0": return new CategorySelectionScreen(name, phone, district, village, 1);
+            return new CreateBusinessConfirmationScreen(name, phone, district, village, 
+            "*", "Transport", new ArrayList<>(), null);
           default:
             return this;
         }
@@ -165,20 +166,22 @@ public class BusinessCreationScreenRepository {
       line("1. Add subcategory");
       line("2. Add subvillage");
       line("3. Add coordinates");
-      line("3. Confirm creation");
-      line("4. Cancel creation");
+      line("4. Confirm creation");
+      line("5. Cancel creation");
       addAction(s -> {
         switch (s) {
           case "1": 
-            // TODO: finish add subcategory
-            return new SelectSubcategoryScreen(this.name, this.phone, this.district, this.village, 
-                              this.subvillage, this.category, this.subcategories, this.coordinates);
+            if (subcategories.size() < 3){
+              return new SelectSubcategoryScreen(this.name, this.phone, this.district, this.village, 
+              this.subvillage, this.category, this.subcategories, this.coordinates);
+            } else {
+              // TODO: fix this screen to actually be informative
+              return this;
+            }
           case "2": 
-            // TODO: finish add subvillage
             return new EnterSubvillageScreen(this.name, this.phone, this.district, this.village, 
             this.subvillage, this.category, this.subcategories, this.coordinates);
           case "3": 
-            // TODO: finish add coordinates
             return new EnterCoordinateScreen(this.name, this.phone, this.district, this.village, 
             this.subvillage, this.category, this.subcategories, this.coordinates);
           case "4": 
@@ -224,17 +227,20 @@ public class BusinessCreationScreenRepository {
           subcategories.add("Milling");
           subcategories.add("Packaging");
           subcategories.add("Threshing");
+          break;
         case "Financial Services":
           subcategories.add("Farmer Cooperative");
           subcategories.add("Formal Lending Institution");
           subcategories.add("Mobile Money");
           subcategories.add("SACCO");
           subcategories.add("VICOBA");
+          break;
         case "Hiring and Labor":
           subcategories.add("Agricultural Labor Crew");
           subcategories.add("Labor Crew Manager");
           subcategories.add("Rental of Draft Animals for Plowing");
           subcategories.add("ractor Rental");
+          break;
         case "Merchant/Retail":
           // TODO: pagination
           subcategories.add("Construction/Hardware Store");
@@ -249,6 +255,7 @@ public class BusinessCreationScreenRepository {
           subcategories.add("Sale of Agricultural Inputs");
           subcategories.add("Small Scale Vendor");
           subcategories.add("Wholesale");
+          break;
         case "Non-Agri Services":
           subcategories.add("Guest House");
           subcategories.add("Health Clinic");
@@ -258,6 +265,7 @@ public class BusinessCreationScreenRepository {
           subcategories.add("Pharmacy");
           subcategories.add("Photocopy and Stationary");
           subcategories.add("Veterinary Services");
+          break;
         case "Repairs":
           // TODO: pagination
           subcategories.add("Bicycle Repair");
@@ -270,6 +278,7 @@ public class BusinessCreationScreenRepository {
           subcategories.add("Tailor");
           subcategories.add("Tractor Repair");
           subcategories.add("Welder");
+          break;
         case "Trading and Wholesale":
           subcategories.add("Crops");
           subcategories.add("Farmgate");
@@ -277,6 +286,7 @@ public class BusinessCreationScreenRepository {
           subcategories.add("Livestock");
           subcategories.add("Market Center");
           subcategories.add("Wholesaler");
+          break;
         case "Transport":
           subcategories.add("Bicycle");
           subcategories.add("Bus");
@@ -284,20 +294,24 @@ public class BusinessCreationScreenRepository {
           subcategories.add("Hand/Pushcart");
           subcategories.add("Motorbike");
           subcategories.add("Porter");
+          break;
       }
       for (int i = 0; i < subcategories.size(); i++) {
-        line(i + 1 + subcategories.get(i));
+        line(i + 1 + ". " + subcategories.get(i));
       }
       line("99. Back");
 
       addAction(s -> {
-        if (s == "99") {
+        int val = Integer.parseInt(s);
+        if (s.equals("99")) {
+          return new CreateBusinessConfirmationScreen(this.name, this.phone, this.district, this.village,
+           this.subvillage, this.category, this.subs, this.coordinates);
+        } else if (val <= subcategories.size()) {
+          subs.add(subcategories.get(val - 1));
           return new CreateBusinessConfirmationScreen(this.name, this.phone, this.district, this.village,
            this.subvillage, this.category, this.subs, this.coordinates);
         } else {
-          subs.add(subcategories.get(Integer.parseInt(s) - 1));
-          return new CreateBusinessConfirmationScreen(this.name, this.phone, this.district, this.village,
-           this.subvillage, this.category, this.subs, this.coordinates);
+          return this;
         }
       });
 
@@ -326,6 +340,7 @@ public class BusinessCreationScreenRepository {
       this.subvillage = subvillage;
       this.category = category;
       this.subcategories = subcats;
+      this.coordinates = coordinates;
 
       line("Enter subvillage name");
     }
@@ -359,7 +374,7 @@ public class BusinessCreationScreenRepository {
       this.subvillage = subvillage;
       this.category = category;
       this.subcategories = subcats;
-
+      this.coordinates = coordinates;
       line("Enter coordinates");
     }
 

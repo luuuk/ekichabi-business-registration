@@ -98,7 +98,7 @@ public class WelcomeScreenRepository {
                             return Screen.conScreen()
                             .line("This workflow is unfinished");
                         default:
-                            return null;
+                            return getSignedInWelcomeScreen();
 
                     }
                 });
