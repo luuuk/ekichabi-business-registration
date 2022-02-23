@@ -26,7 +26,7 @@ public abstract class PaginationScreen extends SimpleScreen {
             try {
                 i = Integer.parseInt(s);
             } catch (NumberFormatException e) {
-                return null;
+                return this;
             }
             if (1 <= i && i <= NUM_ITEMS) {
                 return selected(this.currentPage * NUM_ITEMS + i - 1);
@@ -37,7 +37,7 @@ public abstract class PaginationScreen extends SimpleScreen {
                 this.currentPage--;
                 return this;
             } else {
-                return null;
+                return this;
             }
         });
     }

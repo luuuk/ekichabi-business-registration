@@ -6,7 +6,7 @@ import com.ekichabi_business_registration.db.repository.DistrictRepository;
 import com.ekichabi_business_registration.db.repository.SubcategoryRepository;
 import com.ekichabi_business_registration.db.repository.VillageRepository;
 import com.ekichabi_business_registration.screens.stereotype.PaginationScreen;
-import com.ekichabi_business_registration.service.BusinessService;
+// import com.ekichabi_business_registration.service.BusinessService;
 import com.ekichabi_business_registration.screens.stereotype.Screen;
 import com.ekichabi_business_registration.screens.stereotype.SimpleScreen;
 
@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManager;
+//import javax.persistence.EntityManager;
 
 @Component
 @RequiredArgsConstructor
@@ -85,7 +85,7 @@ public class BusinessCreationScreenRepository {
         private final List<CategoryEntity> categories;
         private final BusinessEntity businessEntity;
 
-        public SelectCategoryScreen(List<CategoryEntity> categories, List<String> categoryNames,
+        SelectCategoryScreen(List<CategoryEntity> categories, List<String> categoryNames,
                                     BusinessEntity businessEntity) {
             super(categoryNames, "Select category");
 
@@ -115,7 +115,7 @@ public class BusinessCreationScreenRepository {
         private final List<DistrictEntity> districts;
         private final BusinessEntity businessEntity;
 
-        public SelectDistrictScreen(List<DistrictEntity> districts, List<String> districtNames,
+        SelectDistrictScreen(List<DistrictEntity> districts, List<String> districtNames,
                                     BusinessEntity businessEntity) {
             super(districtNames, "Select district");
             this.districts = districts;
@@ -143,7 +143,7 @@ public class BusinessCreationScreenRepository {
         private final List<VillageEntity> villages;
         private final BusinessEntity businessEntity;
 
-        public SelectVillageScreen(List<VillageEntity> villages, List<String> villageNames,
+        SelectVillageScreen(List<VillageEntity> villages, List<String> villageNames,
                                    BusinessEntity businessEntity) {
             super(villageNames, "Select village");
             this.villages = villages;
@@ -158,7 +158,7 @@ public class BusinessCreationScreenRepository {
     }
 
     private class CreateBusinessConfirmationScreen extends SimpleScreen {
-        public CreateBusinessConfirmationScreen(BusinessEntity business, VillageEntity village) {
+        CreateBusinessConfirmationScreen(BusinessEntity business, VillageEntity village) {
             super(true);
 
             line("Add additional information");
@@ -172,14 +172,8 @@ public class BusinessCreationScreenRepository {
             addAction(s -> {
                 switch (s) {
                     case "1":
-                        if (business.getSubcategories().size() < 3) {
-                            return getSelectSubcategoryScreen(business.getCategory(), business,
-                                    village);
-                        } else {
-                            // TODO: Do we really enforce this constraint?
-                            // TODO: fix this screen to actually be informative
-                            return this;
-                        }
+                        return getSelectSubcategoryScreen(business.getCategory(), business,
+                                village);
                     case "2":
                         return new EnterSubvillageScreen(business, village);
                     case "3":
@@ -217,7 +211,7 @@ public class BusinessCreationScreenRepository {
         private final BusinessEntity business;
         private final VillageEntity village;
 
-        public SelectSubcategoryScreen(
+        SelectSubcategoryScreen(
                 List<SubcategoryEntity> subcategories,
                 List<String> subcategoryNames, BusinessEntity business, VillageEntity village) {
             super(subcategoryNames, "Select subcategories");
@@ -238,7 +232,7 @@ public class BusinessCreationScreenRepository {
         private final BusinessEntity business;
         private final VillageEntity village;
 
-        public EnterSubvillageScreen(BusinessEntity business, VillageEntity village) {
+        EnterSubvillageScreen(BusinessEntity business, VillageEntity village) {
             this.business = business;
             this.village = village;
             line("Enter subvillage name");
@@ -257,7 +251,7 @@ public class BusinessCreationScreenRepository {
         private final BusinessEntity business;
         private final VillageEntity village;
 
-        public EnterCoordinateScreen(BusinessEntity business, VillageEntity village) {
+        EnterCoordinateScreen(BusinessEntity business, VillageEntity village) {
             this.business = business;
             this.village = village;
             line("Enter coordinates");
