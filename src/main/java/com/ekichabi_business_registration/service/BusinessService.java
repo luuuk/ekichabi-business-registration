@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,12 @@ public class BusinessService {
     private final CategoryRepository categoryRepository;
     private final SubcategoryRepository subcategoryRepository;
     private final AccountEntity v1AdminAccount =
-            AccountEntity.builder().name("V1_ADMIN").password("V1_ADMIN").build();
+            AccountEntity.builder()
+                    .name("V1_ADMIN")
+                    .password("V1_ADMIN")
+                    .createdAt(LocalDateTime.MIN)
+                    .updatedAt(LocalDateTime.MIN)
+                    .build();
     private static final int PHONE_NUMBERS_V1_COUNT = 3;
 
     public BusinessEntity findBusinessById(Long id) {
@@ -115,6 +121,8 @@ public class BusinessService {
                                     .category(category)
                                     .owner(v1AdminAccount)
                                     .phoneNumbers(phoneNumbers)
+                                    .createdAt(LocalDateTime.MIN)
+                                    .updatedAt(LocalDateTime.MIN)
                                     .build();
                     businessRepository.save(entity);
                     created++;
