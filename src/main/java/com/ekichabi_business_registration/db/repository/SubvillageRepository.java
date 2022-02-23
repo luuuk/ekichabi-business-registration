@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SubvillageRepository extends CrudRepository<SubvillageEntity, Integer> {
     boolean existsByNameAndVillage(String name, VillageEntity parentVillage);
+    SubvillageEntity findByNameAndVillage(String name, VillageEntity village);
 }

@@ -1,5 +1,6 @@
 package com.ekichabi_business_registration.controller;
 
+import com.ekichabi_business_registration.service.BusinessService;
 import com.ekichabi_business_registration.service.CategoryService;
 import com.ekichabi_business_registration.service.GeoService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class AdminController {
     private final Logger logger = LoggerFactory.getLogger(BusinessController.class);
     private final CategoryService categoryService;
     private final GeoService geoService;
+    private final BusinessService businessService;
 
     /**
      * Creates categories based on the contents of census_full.csv
@@ -111,7 +113,7 @@ public class AdminController {
      * in the resources/static directory
      **/
     @PostMapping("subvillages/{auth}")
-    public ResponseEntity<?> createsubvillages(@PathVariable String auth) {
+    public ResponseEntity<?> createSubvillages(@PathVariable String auth) {
         if (!auth.equals(PASSWORD)) {
             return ResponseEntity.badRequest()
                     .body("Admin user not authenticated");
@@ -123,6 +125,51 @@ public class AdminController {
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body("Could not create subvillages");
+        }
+    }
+
+    /**
+     * Creates businesses based on the contents of census_full.csv
+     * in the resources/static directory
+     **/
+    @PostMapping("businesses/{auth}")
+    public ResponseEntity<?> createBusinesses(@PathVariable String auth) {
+        if (!auth.equals(PASSWORD)) {
+            return ResponseEntity.badRequest()
+                    .body("Admin user not authenticated");
+        }
+        logger.info("Creating businesses from Census v1 data");
+        try {
+            int createdCount = businessService.createBusinesses();
+            return ResponseEntity.ok().body("Created " + createdCount + " new businesses");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body("Could not create businesses");
+        }
+    }
+
+    /**
+     * Creates all entities based on the contents of census_full.csv
+     * in the resources/static directory
+     **/
+    @PostMapping("seed-from-census/{auth}")
+    public ResponseEntity<?> createFromCensus(@PathVariable String auth) {
+        if (!auth.equals(PASSWORD)) {
+            return ResponseEntity.badRequest()
+                    .body("Admin user not authenticated");
+        }
+        logger.info("Creating businesses from Census v1 data");
+        try {
+            categoryService.createCategories();
+            categoryService.createSubcategories();
+            geoService.createDistricts();
+            geoService.createVillages();
+            geoService.createSubvillages();
+            int createdCount = businessService.createBusinesses();
+            return ResponseEntity.ok().body("Created " + createdCount + " new businesses");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body("Could not create businesses");
         }
     }
 }
