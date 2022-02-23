@@ -13,6 +13,7 @@ import com.ekichabi_business_registration.db.repository.DistrictRepository;
 import com.ekichabi_business_registration.db.repository.SubcategoryRepository;
 import com.ekichabi_business_registration.db.repository.SubvillageRepository;
 import com.ekichabi_business_registration.db.repository.VillageRepository;
+import com.ekichabi_business_registration.util.exceptions.InvalidCreationException;
 import com.opencsv.CSVReaderHeaderAware;
 import com.opencsv.exceptions.CsvValidationException;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,12 @@ import static com.ekichabi_business_registration.service.CategoryService.SUBSECT
 @Service
 @RequiredArgsConstructor
 public class BusinessService {
+    private static final int PHONE_NUMBER_LENGTH = 9;
+    private static final int PHONE_NUMBERS_V1_COUNT = 3;
+    private static final String COORDINATE_REGEX =
+            "^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|"
+                    + "((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$";
+
     private final BusinessRepository businessRepository;
     private final DistrictRepository districtRepository;
     private final VillageRepository villageRepository;
@@ -43,7 +50,6 @@ public class BusinessService {
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build();
-    private static final int PHONE_NUMBERS_V1_COUNT = 3;
 
     public BusinessEntity findBusinessById(Long id) {
         return businessRepository.findById(id).get();
@@ -55,6 +61,7 @@ public class BusinessService {
         return businessEntities;
     }
 
+    //TODO Luke complete this before demo on 2/23
     public BusinessEntity createBusiness(BusinessEntity businessEntity)
             throws InvalidCreationException {
 
@@ -63,9 +70,62 @@ public class BusinessService {
             throw new InvalidCreationException();
         }
 
-        //TODO Luke add more validation steps to this method
+        // If business has no category or has a category not in the DB, throw exception
+        if (businessEntity.getCategory() == null
+                || !categoryRepository.existsByName(businessEntity.getCategory().getName())) {
+            throw new InvalidCreationException();
+        }
+
+        // If business has a subcategory not associated with its category,
+        // write new subcategory to db
+        for (SubcategoryEntity subcategory : businessEntity.getSubcategories()) {
+            if (!subcategoryRepository.existsByNameAndCategory(subcategory.getName(),
+                    subcategory.getCategory())) {
+                subcategoryRepository.save(subcategory);
+            }
+        }
+
+        // If business has no district, throw exception
+        if (businessEntity.getSubvillage().getVillage().getDistrict() == null) {
+            throw new InvalidCreationException();
+        }
+
+        // If business has no village, throw exception
+        if (businessEntity.getSubvillage().getVillage() == null) {
+            throw new InvalidCreationException();
+        }
+
+        // If village not yet in DB, add mapping to district
+        if (!villageRepository.existsByNameAndDistrict(
+                businessEntity.getSubvillage().getVillage().getName(),
+                businessEntity.getSubvillage().getVillage().getDistrict())) {
+            villageRepository.save(businessEntity.getSubvillage().getVillage());
+        }
+
+        // If subvillage not yet in DB, add mapping to village
+        if (!subvillageRepository.existsByNameAndVillage(businessEntity.getSubvillage().getName(),
+                businessEntity.getSubvillage().getVillage())) {
+            subvillageRepository.save(businessEntity.getSubvillage());
+        }
+
+        // If business has no owners, throw exception
+        if (businessEntity.getOwners().isEmpty()) {
+            throw new InvalidCreationException();
+        }
+
+        // If business phone numbers are not of right format, throw exception
+        for (String phoneNumber : businessEntity.getPhoneNumbers()) {
+            if (phoneNumber.length() != PHONE_NUMBER_LENGTH) {
+                throw new InvalidCreationException();
+            }
+            // TODO check phone number regex
+        }
+
+        //TODO check coordinate regex
+
         return businessRepository.save(businessEntity);
     }
+
 
     /**
      * Creates businesses from V1 Census data
