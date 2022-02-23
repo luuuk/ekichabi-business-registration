@@ -55,10 +55,15 @@ public abstract class PaginationScreen extends SimpleScreen {
                 .append("/").append(numPages).append(")")
                 .append("\n");
 
-        for (int i = currentPage * NUM_ITEMS; i < (currentPage + 1) * NUM_ITEMS; i++) {
+        for (int i = 0; i < NUM_ITEMS; i++) {
             // fill additional lines with "" to make sure the pagination option
             // is at the bottom
-            sb.append(i < options.size() ? options.get(i) : "").append("\n");
+            int index = currentPage * NUM_ITEMS;
+            if (index < options.size()) {
+                sb.append(i).append(". ").append(options.get(index)).append("\n");
+            } else {
+                sb.append("\n");
+            }
         }
 
         if (currentPage != 0 && currentPage != numPages - 1) {
