@@ -68,8 +68,8 @@ public class BusinessService {
         return businessEntities;
     }
 
-    public List<BusinessEntity> findAllBusinessesByCategory(CategoryEntity category) {
-        CategoryEntity existingCategory = categoryRepository.findByName(category.getName());
+    public List<BusinessEntity> findAllBusinessesByCategory(String category) {
+        CategoryEntity existingCategory = categoryRepository.findByName(category);
         return businessRepository.findAllByCategory(existingCategory);
     }
 

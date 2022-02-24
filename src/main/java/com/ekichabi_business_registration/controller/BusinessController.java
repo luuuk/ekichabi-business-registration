@@ -58,11 +58,11 @@ public class BusinessController {
     }
 
     // TODO implement remaining endpoints here
-    @GetMapping("businessesByCategory")
+    @GetMapping("businessesByCategory/{category}")
     public ResponseEntity<List<BusinessEntity>> findAllByCategory(
-            @RequestBody CategoryEntity categoryEntity) {
+            @PathVariable String category) {
         logger.info("Calling FindAllBusinessesByCategory()");
-        List<BusinessEntity> businessEntities = service.findAllBusinessesByCategory(categoryEntity);
+        List<BusinessEntity> businessEntities = service.findAllBusinessesByCategory(category);
         return ResponseEntity.ok().body(businessEntities);
     }
 }
