@@ -63,4 +63,30 @@ public class BusinessController {
         List<BusinessEntity> businessEntities = service.findAllBusinessesByCategory(category);
         return ResponseEntity.ok().body(businessEntities);
     }
+
+    @GetMapping("businessesByDistrict/{district}")
+    public ResponseEntity<List<BusinessEntity>> findAllByDistrict(
+            @PathVariable String district) {
+        logger.info("Calling FindAllBusinessesByDistrict()");
+        List<BusinessEntity> businessEntities = service.findAllBusinessesByDistrict(district);
+        return ResponseEntity.ok().body(businessEntities);
+    }
+
+    @GetMapping("businessesByVillage/{village}/{district}")
+    public ResponseEntity<List<BusinessEntity>> findAllByVillage(
+            @PathVariable String village, @PathVariable String district) {
+        logger.info("Calling FindAllBusinessesByVillage()");
+        List<BusinessEntity> businessEntities =
+            service.findAllBusinessesByVillage(village, district);
+        return ResponseEntity.ok().body(businessEntities);
+    }
+
+    @GetMapping("businessesBySubcategory/{subcategory}/{category}")
+    public ResponseEntity<List<BusinessEntity>> findAllBySubcategory(
+            @PathVariable String subcategory, @PathVariable String category) {
+        logger.info("Calling FindAllBusinessesBySubcategory()");
+        List<BusinessEntity> businessEntities =
+            service.findAllBusinessesBySubcategory(subcategory, category);
+        return ResponseEntity.ok().body(businessEntities);
+    }
 }
