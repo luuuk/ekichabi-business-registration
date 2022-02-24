@@ -15,6 +15,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -55,7 +56,7 @@ public class AccountEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @ManyToMany(mappedBy = "owners")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "owners")
     @JsonIgnore
     private Collection<BusinessEntity> ownedBusinesses;
 

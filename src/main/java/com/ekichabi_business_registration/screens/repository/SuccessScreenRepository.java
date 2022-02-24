@@ -17,6 +17,7 @@ public class SuccessScreenRepository {
     @Setter(onMethod = @__({@Autowired}), onParam = @__({@Lazy}))
     private WelcomeScreenRepository welcomeScreenRepository;
 
+    @Setter(onMethod = @__({@Autowired}), onParam = @__({@Lazy}))
     private UpdateBusinessScreenRepository updateBusinessRepo;
 
     public Screen getSuccessScreen(String reason) {

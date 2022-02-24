@@ -114,7 +114,7 @@ public class UpdateBusinessScreenRepository {
           case "8":
             return new UpdateCoordinatesScreen(be, acc);
           case "99":
-            return getSelectBusinessScreen(acc);
+            return welcomeScreenRepository.getSignedInWelcomeScreen(acc);
           default: 
             return this;
         }

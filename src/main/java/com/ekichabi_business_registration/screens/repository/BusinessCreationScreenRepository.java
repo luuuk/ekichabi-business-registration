@@ -156,6 +156,8 @@ public class BusinessCreationScreenRepository {
 
         @Override
         protected Screen selected(int i) {
+            SubvillageEntity subvil = SubvillageEntity.builder().name("*").village(villages.get(i)).build();
+            businessEntity.setSubvillage(subvil);
             return new CreateBusinessConfirmationScreen(businessEntity, villages.get(i));
         }
     }
@@ -248,8 +250,9 @@ public class BusinessCreationScreenRepository {
 
         @Override
         public Screen getNextScreen(String s) {
-            val subvillage = SubvillageEntity.builder().name(s).village(village).build();
-            business.setSubvillage(subvillage);
+            //val subvillage = SubvillageEntity.builder().name(s).village(village).build();
+            //business.setSubvillage(subvillage);
+            business.getSubvillage().setName(s);
             return new CreateBusinessConfirmationScreen(business, village);
         }
     }
