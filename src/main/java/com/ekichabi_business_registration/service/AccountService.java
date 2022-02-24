@@ -2,6 +2,7 @@ package com.ekichabi_business_registration.service;
 
 import com.ekichabi_business_registration.db.entity.AccountEntity;
 import com.ekichabi_business_registration.db.repository.AccountRepository;
+import com.ekichabi_business_registration.util.exceptions.InvalidCreationException;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.stereotype.Service;

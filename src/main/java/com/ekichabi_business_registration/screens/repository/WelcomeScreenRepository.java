@@ -108,6 +108,42 @@ public class WelcomeScreenRepository {
                 });
     }
 
+    public Screen getSignedInWelcomeScreen(AccountEntity accountEntity) {
+        return Screen.conScreen()
+                .line("1. Browse")
+                .line("2. Create business")
+                .line("3. Update business")
+                .line("4. Update account")
+                .line("5. Exit")
+                .addAction(c -> {
+                    switch (c) {
+                        case "1":
+                            // TODO: add browse business functionality
+                            return Screen.conScreen()
+                                    .line("This workflow is unfinished");
+                        case "2":
+                            // TODO: add create business functionality
+                            return businessCreationScreenRepository
+                                    .getBusinessCreationScreen(accountEntity);
+                        case "3":
+                            // TODO: add update business functionality
+                            return Screen.conScreen()
+                                    .line("This workflow is unfinished");
+                        case "4":
+                            // TODO: add update account functionality
+                            return Screen.conScreen()
+                                    .line("This workflow is unfinished");
+                        case "5":
+                            // TODO: add session termination functionality
+                            return Screen.conScreen()
+                                    .line("This workflow is unfinished");
+                        default:
+                            return getSignedInWelcomeScreen(accountEntity);
+
+                    }
+                });
+    }
+
     public Screen getError404Screen() {
         return Screen.endScreen()
                 .line("ERROR Page not found");

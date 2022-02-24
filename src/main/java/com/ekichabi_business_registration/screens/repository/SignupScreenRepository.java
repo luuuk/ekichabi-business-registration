@@ -3,7 +3,7 @@ package com.ekichabi_business_registration.screens.repository;
 import com.ekichabi_business_registration.db.entity.AccountEntity;
 import com.ekichabi_business_registration.screens.stereotype.*;
 import com.ekichabi_business_registration.service.AccountService;
-import com.ekichabi_business_registration.service.InvalidCreationException;
+import com.ekichabi_business_registration.util.exceptions.InvalidCreationException;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.apache.logging.log4j.util.Strings;
@@ -79,6 +79,7 @@ public class SignupScreenRepository {
     private class SignupConfirmationScreen extends SimpleScreen {
         private final String username;
         private final String password;
+        private final StringBuilder sb = new StringBuilder();
 
         SignupConfirmationScreen(String username, String password) {
             super(true);
