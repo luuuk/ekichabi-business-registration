@@ -6,7 +6,6 @@ import com.ekichabi_business_registration.db.repository.DistrictRepository;
 import com.ekichabi_business_registration.db.repository.SubcategoryRepository;
 import com.ekichabi_business_registration.db.repository.VillageRepository;
 import com.ekichabi_business_registration.screens.stereotype.PaginationScreen;
-// import com.ekichabi_business_registration.service.BusinessService;
 import com.ekichabi_business_registration.screens.stereotype.Screen;
 import com.ekichabi_business_registration.screens.stereotype.SimpleScreen;
 

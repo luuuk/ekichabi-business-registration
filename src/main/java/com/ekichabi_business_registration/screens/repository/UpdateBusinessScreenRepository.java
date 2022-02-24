@@ -3,14 +3,22 @@ package com.ekichabi_business_registration.screens.repository;
 import com.ekichabi_business_registration.service.BusinessService;
 import com.ekichabi_business_registration.db.entity.BusinessEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.ekichabi_business_registration.db.entity.*;
+import com.ekichabi_business_registration.db.repository.*;
+
 import com.ekichabi_business_registration.screens.stereotype.Screen;
 import com.ekichabi_business_registration.screens.stereotype.SimpleScreen;
 import com.ekichabi_business_registration.screens.stereotype.InputScreen;
+import com.ekichabi_business_registration.screens.stereotype.PaginationScreen;
 
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.val;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -21,41 +29,61 @@ import org.hibernate.sql.Update;
 @Component
 @RequiredArgsConstructor
 public class UpdateBusinessScreenRepository {
-  private final BusinessService businessService;
   private final ErrorScreenRepository errorScreenRepository;
   private final SuccessScreenRepository successScreenRepository;
+  private final CategoryRepository categoryRepository;
+  private final SubcategoryRepository subcategoryRepository;
+  private final DistrictRepository districtRepository;
+  private final VillageRepository villageRepository;
 
   @Setter(onMethod = @__({@Autowired}), onParam = @__({@Lazy}))
   private WelcomeScreenRepository welcomeScreenRepository;
 
-  public Screen getUpdateBusinessScreen() {
-    return new SelectBusinessScreen();
+  // For welcome screen repository
+  public Screen getUpdateBusinessesScreen(AccountEntity accountEntity) {
+    return getSelectBusinessScreen(accountEntity);
   }
 
-  private class SelectBusinessScreen extends SimpleScreen {
-    
+  // For success screen repository
+  public Screen getUpdateBusinessScreen(BusinessEntity be, AccountEntity acc) {
+    return new UpdateBusinessScreen(be, acc);
+  } 
 
-    SelectBusinessScreen() {
-      super(true);
-      line("1. <temp business>");
-      line("2. <temp buisness>");
-      line("99. Back");
-      addAction(s -> {
-        switch (s) {
-          case "1": 
-          case "2":
-          case "99": return welcomeScreenRepository.getSignedInWelcomeScreen();
-        }
-      });
+  private Screen getSelectBusinessScreen(AccountEntity accountEntity) {
+    List<BusinessEntity> businesses = new ArrayList<>();
+    List<String> businessNames = new ArrayList<>();
+    for (val business : accountEntity.getOwnedBusinesses()) {
+      businesses.add(business);
+      businessNames.add(business.getName());
+    }
+    return new SelectBusinessScreen(businesses, businessNames, accountEntity);
+  }
+
+  private class SelectBusinessScreen extends PaginationScreen {
+    private final List<BusinessEntity> businesses;
+    private final AccountEntity acc;
+
+    SelectBusinessScreen(List<BusinessEntity> businesses, List<String> businessNames,
+                          AccountEntity acc) {
+      super(businessNames, "Select business to update");
+      this.businesses = businesses;
+      this.acc = acc;
+    }
+
+    @Override
+    protected Screen selected(int i) {
+      return new UpdateBusinessScreen(businesses.get(i), this.acc);
     }
   }
 
   private class UpdateBusinessScreen extends SimpleScreen {
     private final BusinessEntity be;
+    private final AccountEntity acc;
 
-    UpdateBusinessScreen(BusinessEntity be) {
+    UpdateBusinessScreen(BusinessEntity be, AccountEntity acc) {
       super(true);
       this.be = be;
+      this.acc = acc;
       line("Update...");
       line("1. Name");
       line("2. Phone");
@@ -70,23 +98,23 @@ public class UpdateBusinessScreenRepository {
       addAction(s -> {
         switch (s) {
           case "1":
-            return new UpdateNameScreen(be);
+            return new UpdateNameScreen(be, acc);
           case "2":
-            return new UpdatePhoneScreen(be);
+            return new UpdatePhoneScreen(be, acc);
           case "3":
-            return new UpdateCategoryScreen(be);
+            return getUpdateCategoryScreen(be, acc);
           case "4":
-            return new UpdateSubcategoriesScreen();
+            return getUpdateSubcategoryScreen(be, be.getCategory(), acc);
           case "5":
-            return new UpdateDistrictScreen(be);
+            return getUpdateDistrictScreen(be, acc);
           case "6":
-            return new UpdateVillageScreen(be);
+            return getUpdateVillageScreen(be.getSubvillage().getVillage().getDistrict(), be, acc);
           case "7":
-            return new UpdateSubvillageScreen(be);
+            return new UpdateSubvillageScreen(be, acc);
           case "8":
-            return new UpdateCoordinatesScreen(be);
+            return new UpdateCoordinatesScreen(be, acc);
           case "99":
-            return new SelectBusinessScreen();
+            return getSelectBusinessScreen(acc);
           default: 
             return this;
         }
@@ -95,164 +123,205 @@ public class UpdateBusinessScreenRepository {
     }
   }
 
-  private class UpdateCategoryScreen extends SimpleScreen {
+  private Screen getUpdateCategoryScreen(BusinessEntity be, AccountEntity acc) {
+    List<CategoryEntity> categories = new ArrayList<>();
+    List<String> categoryNames = new ArrayList<>();
+    for (val category : categoryRepository.findAll()) {
+        categories.add(category);
+        categoryNames.add(category.getName());
+    }
+    return new UpdateCategoryScreen(categories, categoryNames, businessEntity);
+  }
+
+  private class UpdateCategoryScreen extends PaginationScreen {
     private final BusinessEntity be;
+    private final AccountEntity acc;
+    private final List<CategoryEntity> cats;
 
-    UpdateCategoryScreen(BusinessEntity be) {
-      super(true);
+    UpdateCategoryScreen(List<CategoryEntity> cats, List<String> catNames,
+                         BusinessEntity be, AccountEntity acc) {
+      super(catNames, "Select new category");
       this.be = be;
-      line("Select category");
-      line("1. Agri Processing");
-      line("2. Financial Services");
-      line("3. Hiring and Labor");
-      line("4. Merchant/Retail");
-      line("5. Non-Agri Services");
-      line("6. Repairs");
-      line("7. Trading and Wholesale");
-      line("8. Transport");
-      line("99. Back");
+      this.acc = acc;
+      this.cats = cats;
+    }
 
-      // Interesting dependency of business updating here, if we change the category
-      // we should clear the old subcategory selections
-      addAction(s -> {
-        switch (s) {
-          case "1":
-            // TODO: add call to update business entity
-            break;
-          case "2":
-            // TODO: add call to update business entity
-            break;
-          case "3":
-            // TODO: add call to update business entity
-            break;
-          case "4":
-            // TODO: add call to update business entity
-            break;
-          case "5":
-            // TODO: add call to update business entity
-            break;
-          case "6":
-            // TODO: add call to update business entity
-            break;
-          case "7":
-            // TODO: add call to update business entity
-            break;
-          case "8":
-            // TODO: add call to update business entity
-            break;
-          case "99":
-            break;
-          default:
-            break;
-        }
-        return new UpdateBusinessScreen(be);
-      });
+    @Override
+    protected Screen selected(int i) {
+      // TODO: set new category value
+      return getUpdateSubcategoryScreen(be, cats.get(i), acc);
     }
   }
 
   private class UpdateNameScreen extends InputScreen {
     private final BusinessEntity be; 
+    private final AccountEntity acc;
 
-    UpdateNameScreen(BusinessEntity be) {
+    UpdateNameScreen(BusinessEntity be, AccountEntity acc) {
       super();
       this.be = be;
+      this.acc = acc;
       line("Enter new business name");
     }
 
     @Override
     public Screen getNextScreen(String s) {
       // TODO: add call to update business entity
-      return new UpdateBusinessScreen(be);
+      return successScreenRepository.getBusinessUpdateSuccessScreen("Name updated",
+              acc, be);
     }
   }
 
   private class UpdatePhoneScreen extends InputScreen {
-    private final BusinessEntity be; 
+    private final BusinessEntity be;
+    private final AccountEntity acc;
 
-    UpdatePhoneScreen(BusinessEntity be) {
+    UpdatePhoneScreen(BusinessEntity be, AccountEntity acc) {
       super();
       this.be = be;
+      this.acc = acc;
       line("Enter new phone number");
     }
 
     @Override
     public Screen getNextScreen(String s) {
       // TODO: add call to update business entity
-      return new UpdateBusinessScreen(be);
+      return successScreenRepository.getBusinessUpdateSuccessScreen("Phone number updated",
+              acc, be);
     }
   }
 
-  // TODO: change this to be a selection menu
-  private class UpdateDistrictScreen extends InputScreen {
-    private final BusinessEntity be; 
+  private Screen getUpdateDistrictScreen(BusinessEntity be, AccountEntity acc) {
+    List<DistrictEntity> districts = new ArrayList<>();
+    List<String> districtNames = new ArrayList<>();
+    for (val district : districtRepository.findAll()) {
+        districts.add(district);
+        districtNames.add(district.getName());
+    }
+    return new UpdateDistrictScreen(districts, districtNames, be, acc);
+  }
 
-    UpdateDistrictScreen(BusinessEntity be) {
-      super();
+  private class UpdateDistrictScreen extends PaginationScreen {
+    private final List<DistrictEntity> districts;
+    private final BusinessEntity be;
+    private final AccountEntity acc;
+
+    UpdateDistrictScreen(List<DistrictEntity> districts, List<String> districtNames,
+                                 BusinessEntity be, AccountEntity acc) {
+      super(districtNames, "Select new district");
+      this.districts = districts;
       this.be = be;
-      line("Enter new district");
+      this.acc = acc;
     }
 
     @Override
-    public Screen getNextScreen(String s) {
-      // TODO: add call to update business entity
-      return new UpdateBusinessScreen(be);
+    protected Screen selected(int i) {
+      // TODO: update district in be
+      return getUpdateVillageScreen(districts.get(i), be, acc);
     }
   }
 
-  // TODO: change this to be a selection menu
-  private class UpdateVillageScreen extends InputScreen {
-    private final BusinessEntity be; 
+  private Screen getUpdateVillageScreen(DistrictEntity district, BusinessEntity be,
+                                        AccountEntity acc) {
+    List<VillageEntity> villages = new ArrayList<>();
+    List<String> villageNames = new ArrayList<>();
+    for (val village : villageRepository.findByDistrict(district)) {
+        villages.add(village);
+        villageNames.add(village.getName());
+    }
+    return new UpdateVillageScreen(villages, villageNames, be, acc);
+  }
 
-    UpdateVillageScreen(BusinessEntity be) {
-      super();
+  private class UpdateVillageScreen extends PaginationScreen {
+    private final List<VillageEntity> villages;
+    private final BusinessEntity be;
+    private final AccountEntity acc;
+
+    UpdateVillageScreen(List<VillageEntity> villages, List<String> villageNames,
+                        BusinessEntity be, AccountEntity acc) {
+      super(villageNames, "Select new village");
+      this.villages = villages;
       this.be = be;
-      line("Enter new village");
+      this.acc = acc;
     }
 
     @Override
-    public Screen getNextScreen(String s) {
-      // TODO: add call to update business entity
-      return new UpdateBusinessScreen(be);
+    protected Screen selected(int i) {
+      // TODO: change village in the business entity
+      return successScreenRepository.getBusinessUpdateSuccessScreen("Geo info updated",
+              acc, be);
     }
   }
 
   private class UpdateSubvillageScreen extends InputScreen {
-    private final BusinessEntity be; 
+    private final BusinessEntity be;
+    private final AccountEntity acc;
 
-    UpdateSubvillageScreen(BusinessEntity be) {
+    UpdateSubvillageScreen(BusinessEntity be, AccountEntity acc) {
       super();
       this.be = be;
+      this.acc = acc;
       line("Enter new subvillage");
     }
 
     @Override
     public Screen getNextScreen(String s) {
       // TODO: add call to update business entity
-      return new UpdateBusinessScreen(be);
+      return successScreenRepository.getBusinessUpdateSuccessScreen("Business subvillage updated",
+              acc, be);
     }
   }
 
   private class UpdateCoordinatesScreen extends InputScreen {
-    private final BusinessEntity be; 
+    private final BusinessEntity be;
+    private final AccountEntity acc;
 
-    UpdateCoordinatesScreen(BusinessEntity be) {
+    UpdateCoordinatesScreen(BusinessEntity be, AccountEntity acc) {
       super();
       this.be = be;
+      this.acc = acc;
       line("Enter new business name");
     }
 
     @Override
     public Screen getNextScreen(String s) {
       // TODO: add call to update business entity
-      return new UpdateBusinessScreen(be);
+      be.setCoordinates(s);
+      return successScreenRepository.getBusinessUpdateSuccessScreen("Business coordinates updated",
+              acc, be);
     }
   }
 
-  private class UpdateSubcategoriesScreen extends SimpleScreen {
+  private Screen getUpdateSubcategoryScreen(BusinessEntity be, CategoryEntity ce, 
+                                            AccountEntity acc) {
+    // TODO: implement
+    List<SubcategoryEntity> subcategories = new ArrayList<>();
+    List<String> subcategoryNames = new ArrayList<>();
+    for (val subcategory : subcategoryRepository.findByCategory(ce)) {
+      subcategories.add(subcategory);
+      subcategoryNames.add(subcategory.getName());
+    }
+    return new UpdateSubcategoryScreen(subcategories, subcategoryNames, be, acc);
+  }
 
-    UpdateSubcategoriesScreen() {
-      super(true);
-      
+  private class UpdateSubcategoryScreen extends PaginationScreen {
+    private final List<SubcategoryEntity> subcats;
+    private final BusinessEntity be;
+    private final AccountEntity acc;
+
+    UpdateSubcategoryScreen(List<SubcategoryEntity> subcats, 
+        List<String> subCatNames, BusinessEntity be, AccountEntity acc) {
+      super(subCatNames, "Select new subcategory");
+      this.be = be;
+      this.acc = acc;
+      this.subcats = subcats;
+    }
+
+    @Override
+    protected Screen selected(int i) {
+      // TODO: update business entity
+      return successScreenRepository.getBusinessUpdateSuccessScreen("Subcategory updated",
+              acc, be);
     }
   }
 }

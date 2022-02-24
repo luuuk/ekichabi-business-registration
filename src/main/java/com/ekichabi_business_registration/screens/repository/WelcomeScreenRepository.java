@@ -11,6 +11,7 @@ public class WelcomeScreenRepository {
     private final SignupScreenRepository signupScreenRepository;
     private final SignInScreenRepository signInScreenRepository;
     private final BusinessCreationScreenRepository businessCreationScreenRepository;
+    private final UpdateBusinessScreenRepository updateBusinessScreenRepository;
 
     public static Screen getBrowseBusinessScreen() {
         return null;
@@ -52,42 +53,44 @@ public class WelcomeScreenRepository {
         return Screen.conScreen()
                 .line("Welcome to ekichabi 2.0!")
                 .line("Would you like to ...")
-                .line("1. Browse business")
-                .line("2. Sign in")
-                .line("3. Sign up")
+                .line("1. Sign in")
+                .line("2. Sign up")
+                .line("3. Exit")
                 .addAction(c -> {
                     switch (c) {
                         case "1":
-                            return getBrowseBusinessScreen();
-                        case "2":
                             return signInScreenRepository.getSignInScreen();
-                        case "3":
+                        case "2":
                             return signupScreenRepository.getSignupScreen();
+                        case "3":
+                            return Screen.endScreen()
+                            .line("Thank you for using eKichabi 2.0!");
                         default:
-                            return null;
+                            return getWelcomeScreen();
                     }
                 });
     }
 
     public Screen getSignedInWelcomeScreen(AccountEntity accountEntity) {
         return Screen.conScreen()
-                .line("1. Browse")
-                .line("2. Create business")
-                .line("3. Update business")
+                .line("Signed in as " + accountEntity.getName())
+                .line("1. Create business")
+                .line("2. Update business")
+                .line("3. Delete business")
                 .line("4. Update account")
                 .line("5. Exit")
                 .addAction(c -> {
                     switch (c) {
                         case "1":
-                            // TODO: add browse business functionality
-                            return Screen.conScreen()
-                                    .line("This workflow is unfinished");
-                        case "2":
                             // TODO: add create business functionality
                             return businessCreationScreenRepository
                                     .getBusinessCreationScreen(accountEntity);
-                        case "3":
+                        case "2":
                             // TODO: add update business functionality
+                            return updateBusinessScreenRepository
+                                .getUpdateBusinessesScreen(accountEntity);
+                        case "3":
+                            // TODO: add delete business functionality
                             return Screen.conScreen()
                                     .line("This workflow is unfinished");
                         case "4":
@@ -96,8 +99,8 @@ public class WelcomeScreenRepository {
                                     .line("This workflow is unfinished");
                         case "5":
                             // TODO: add session termination functionality
-                            return Screen.conScreen()
-                                    .line("This workflow is unfinished");
+                            return Screen.endScreen()
+                                .line("Thank you for using eKichabi 2.0!");
                         default:
                             return getSignedInWelcomeScreen(accountEntity);
 
