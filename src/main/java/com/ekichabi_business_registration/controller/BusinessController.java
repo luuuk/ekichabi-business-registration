@@ -1,6 +1,7 @@
 package com.ekichabi_business_registration.controller;
 
 import com.ekichabi_business_registration.db.entity.BusinessEntity;
+import com.ekichabi_business_registration.db.entity.CategoryEntity;
 import com.ekichabi_business_registration.service.BusinessService;
 import com.ekichabi_business_registration.util.exceptions.InvalidCreationException;
 import lombok.RequiredArgsConstructor;
@@ -57,4 +58,11 @@ public class BusinessController {
     }
 
     // TODO implement remaining endpoints here
+    @GetMapping("businessesByCategory")
+    public ResponseEntity<List<BusinessEntity>> findAllByCategory(@RequestBody
+                                                                          CategoryEntity categoryEntity) {
+        logger.info("Calling FindAllBusinessesByCategory()");
+        List<BusinessEntity> businessEntities = service.findAllBusinessesByCategory(categoryEntity);
+        return ResponseEntity.ok().body(businessEntities);
+    }
 }

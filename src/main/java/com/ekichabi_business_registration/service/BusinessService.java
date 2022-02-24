@@ -68,7 +68,11 @@ public class BusinessService {
         return businessEntities;
     }
 
-    //TODO Luke complete this before demo on 2/23
+    public List<BusinessEntity> findAllBusinessesByCategory(CategoryEntity category) {
+        CategoryEntity existingCategory = categoryRepository.findByName(category.getName());
+        return businessRepository.findAllByCategory(existingCategory);
+    }
+
     public BusinessEntity createBusiness(BusinessEntity businessEntity)
             throws InvalidCreationException {
 
