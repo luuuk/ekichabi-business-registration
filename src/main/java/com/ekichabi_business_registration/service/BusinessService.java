@@ -7,6 +7,7 @@ import com.ekichabi_business_registration.db.entity.DistrictEntity;
 import com.ekichabi_business_registration.db.entity.SubcategoryEntity;
 import com.ekichabi_business_registration.db.entity.SubvillageEntity;
 import com.ekichabi_business_registration.db.entity.VillageEntity;
+import com.ekichabi_business_registration.db.repository.AccountRepository;
 import com.ekichabi_business_registration.db.repository.BusinessRepository;
 import com.ekichabi_business_registration.db.repository.CategoryRepository;
 import com.ekichabi_business_registration.db.repository.DistrictRepository;
@@ -33,7 +34,6 @@ import static com.ekichabi_business_registration.service.CategoryService.SUBSECT
 @Service
 @RequiredArgsConstructor
 public class BusinessService {
-    private static final int PHONE_NUMBER_LENGTH = 9;
     private static final int PHONE_NUMBERS_V1_COUNT = 3;
     private static final String COORDINATE_REGEX =
             "^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|"
@@ -47,6 +47,7 @@ public class BusinessService {
     private final SubvillageRepository subvillageRepository;
     private final CategoryRepository categoryRepository;
     private final SubcategoryRepository subcategoryRepository;
+    private final AccountRepository accountRepository;
     private final AccountEntity v1AdminAccount =
             AccountEntity.builder()
                     .name("V1_ADMIN")
@@ -82,6 +83,8 @@ public class BusinessService {
             logger.error("Business has no category or has a category not in the DB");
             throw new InvalidCreationException();
         }
+        businessEntity.setCategory(
+                categoryRepository.findByName(businessEntity.getCategory().getName()));
 
         // If business has a subcategory not associated with its category,
         // write new subcategory to db
@@ -114,8 +117,10 @@ public class BusinessService {
             throw new InvalidCreationException();
         }
 
+        // Find existing district in DB and set business to point to that entity
         DistrictEntity existingBusinessDistrict = districtRepository.findByName(
                 businessEntity.getSubvillage().getVillage().getDistrict().getName());
+        businessEntity.getSubvillage().getVillage().setDistrict(existingBusinessDistrict);
 
         // If village not yet in DB, add mapping to district
         if (!villageRepository.existsByNameAndDistrict(
@@ -125,8 +130,10 @@ public class BusinessService {
             villageRepository.save(businessEntity.getSubvillage().getVillage());
         }
 
+        // Find existing village in DB and set business to point to that entity
         VillageEntity existingBusinessVillage = villageRepository.findByNameAndDistrict(
                 businessEntity.getSubvillage().getVillage().getName(), existingBusinessDistrict);
+        businessEntity.getSubvillage().setVillage(existingBusinessVillage);
 
         // If subvillage not yet in DB, add mapping to village
         if (!subvillageRepository.existsByNameAndVillage(businessEntity.getSubvillage().getName(),
@@ -136,18 +143,30 @@ public class BusinessService {
             subvillageRepository.save(businessEntity.getSubvillage());
         }
 
+        SubvillageEntity existingBusinessSubvillage =
+                subvillageRepository.findByNameAndVillage(businessEntity.getSubvillage().getName(),
+                        existingBusinessVillage);
+        businessEntity.setSubvillage(existingBusinessSubvillage);
+
         // If business has no owners, throw exception
         if (businessEntity.getOwners() == null || businessEntity.getOwners().isEmpty()) {
             logger.error("Business has no owners");
             throw new InvalidCreationException();
         }
 
+        // Find existing owners in DB and use them
+        for (AccountEntity owner : businessEntity.getOwners()) {
+            AccountEntity existingAccount = accountRepository.findByName(owner.getName());
+
+            // If owner already exists in DB use it, otherwise use JPA persist to make a new owner
+            if (existingAccount != null) {
+                businessEntity.getOwners().remove(owner);
+                businessEntity.getOwners().add(existingAccount);
+            }
+        }
+
         // If business phone numbers are not of right format, throw exception
         for (String phoneNumber : businessEntity.getPhoneNumbers()) {
-//            if (phoneNumber.length() != PHONE_NUMBER_LENGTH) {
-//                logger.error("Business phone number is not of correct length");
-//                throw new InvalidCreationException();
-//            }
             if (!phoneNumber.matches(PHONE_NUMBER_REGEX)) {
                 logger.error("Business phone number does not match expected format");
                 throw new InvalidCreationException();
@@ -155,8 +174,8 @@ public class BusinessService {
         }
 
         // If business coordinates are not of right format, throw exception
-        if (businessEntity.getCoordinates() != null &&
-                !businessEntity.getCoordinates().matches(COORDINATE_REGEX)) {
+        if (businessEntity.getCoordinates() != null
+                && !businessEntity.getCoordinates().matches(COORDINATE_REGEX)) {
             logger.error("Business coordinates do not match expected format");
             throw new InvalidCreationException();
         }
