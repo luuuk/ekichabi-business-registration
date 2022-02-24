@@ -8,6 +8,7 @@ import com.ekichabi_business_registration.db.repository.VillageRepository;
 import com.ekichabi_business_registration.screens.stereotype.PaginationScreen;
 import com.ekichabi_business_registration.screens.stereotype.Screen;
 import com.ekichabi_business_registration.screens.stereotype.SimpleScreen;
+import com.ekichabi_business_registration.util.exceptions.InvalidCreationException;
 
 import com.ekichabi_business_registration.service.BusinessService;
 
@@ -29,10 +30,13 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class BusinessCreationScreenRepository {
     private final SuccessScreenRepository successScreenRepository;
+    private final ErrorScreenRepository errorScreenRepository;
     private final CategoryRepository categoryRepository;
     private final SubcategoryRepository subcategoryRepository;
     private final DistrictRepository districtRepository;
     private final VillageRepository villageRepository;
+
+    private final BusinessService businessService;
 
     @Setter(onMethod = @__({@Autowired}), onParam = @__({@Lazy}))
     private WelcomeScreenRepository welcomeScreenRepository;
@@ -125,8 +129,7 @@ public class BusinessCreationScreenRepository {
 
         @Override
         protected Screen selected(int i) {
-            val district = districts.get(i);
-            return getSelectVillageScreen(district, businessEntity);
+            return getSelectVillageScreen(districts.get(i), businessEntity);
         }
     }
 
@@ -153,8 +156,7 @@ public class BusinessCreationScreenRepository {
 
         @Override
         protected Screen selected(int i) {
-            val village = villages.get(i);
-            return new CreateBusinessConfirmationScreen(businessEntity, village);
+            return new CreateBusinessConfirmationScreen(businessEntity, villages.get(i));
         }
     }
 
@@ -180,7 +182,12 @@ public class BusinessCreationScreenRepository {
                     case "3":
                         return new EnterCoordinateScreen(business, village);
                     case "4":
-                        // TODO: actually add the entity
+                        try {
+                            businessService.createBusiness(business);
+                        } catch (InvalidCreationException e) {
+                            return errorScreenRepository.getSignedInErrorScreen(
+                                "Business creation failure", business.getOwners().get(0));
+                        }
                         assert business.getOwners().size() == 1;
                         return successScreenRepository.getSignedInSuccessScreen("Business creation "
                                 + "successful", business.getOwners().get(0));

@@ -1,6 +1,9 @@
 package com.ekichabi_business_registration.screens.repository;
 
+import com.ekichabi_business_registration.db.entity.AccountEntity;
+import com.ekichabi_business_registration.db.entity.BusinessEntity;
 import com.ekichabi_business_registration.screens.stereotype.Screen;
+import com.ekichabi_business_registration.screens.stereotype.SimpleScreen;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -14,14 +17,23 @@ public class ErrorScreenRepository {
     @Setter(onMethod = @__({@Autowired}), onParam = @__({@Lazy}))
     private WelcomeScreenRepository welcomeScreenRepository;
 
+    private UpdateBusinessScreenRepository updateBusinessRepo;
+
     public Screen getErrorScreen(String reason) {
         return new ErrorScreen(reason);
     }
 
-    private class ErrorScreen extends Screen {
+    public Screen getSignedInErrorScreen(String reason, AccountEntity accountEntity) {
+        return new SignedInErrorScreen(reason, accountEntity);
+    }
+
+    public Screen getBusinessUpdateErrorScreen(String reason, AccountEntity acc, BusinessEntity be) {
+        return new BusinessUpdateErrorScreen(reason, acc, be);
+    }
+
+    public class ErrorScreen extends SimpleScreen {
         @Getter
         private final String reason;
-        private int count = 0;
 
         ErrorScreen(String reason) {
             super(true);
@@ -29,18 +41,46 @@ public class ErrorScreenRepository {
             line("ERROR");
             line(reason);
             line("99. Back");
+            addAction(s -> {
+                if (s.equals("99")) {
+                    return getNextScreen();
+                }
+                return this;
+            });
+        }
+
+        protected Screen getNextScreen() {
+            return welcomeScreenRepository.getWelcomeScreen();
+        }
+    }
+
+    public class SignedInErrorScreen extends ErrorScreen {
+        private final AccountEntity accountEntity;
+
+        public SignedInErrorScreen(String reason, AccountEntity accountEntity) {
+            super(reason);
+            this.accountEntity = accountEntity;
         }
 
         @Override
-        public Screen doAction(char c) {
-            if (c == '*') {
-                if (count == 2) {
-                    return welcomeScreenRepository.getWelcomeScreen();
-                }
-            } else if (c == '9') {
-                count++;
-            }
-            return this;
+        protected Screen getNextScreen() {
+            return welcomeScreenRepository.getSignedInWelcomeScreen(accountEntity);
+        }
+    }
+
+    public class BusinessUpdateErrorScreen extends ErrorScreen {
+        private final AccountEntity accountEntity;
+        private final BusinessEntity businessEntity;
+
+        public BusinessUpdateErrorScreen(String reason, AccountEntity acc, BusinessEntity be) {
+            super(reason);
+            this.accountEntity = acc;
+            this.businessEntity = be;
+        }
+
+        @Override
+        protected Screen getNextScreen() {
+            return updateBusinessRepo.getUpdateBusinessScreen(businessEntity, accountEntity);
         }
     }
 }

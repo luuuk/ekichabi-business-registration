@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class SuccessScreenRepository {
-
     @Setter(onMethod = @__({@Autowired}), onParam = @__({@Lazy}))
     private WelcomeScreenRepository welcomeScreenRepository;
 
@@ -46,7 +45,7 @@ public class SuccessScreenRepository {
                 if (s.equals("99")) {
                     return getNextScreen();
                 }
-                return null;
+                return this;
             });
         }
 
@@ -56,7 +55,6 @@ public class SuccessScreenRepository {
     }
 
     public class SignedInSuccessScreen extends SuccessScreen {
-
         private final AccountEntity accountEntity;
 
         public SignedInSuccessScreen(String reason, AccountEntity accountEntity) {

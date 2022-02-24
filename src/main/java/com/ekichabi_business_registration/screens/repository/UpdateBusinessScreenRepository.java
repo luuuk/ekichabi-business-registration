@@ -44,7 +44,7 @@ public class UpdateBusinessScreenRepository {
     return getSelectBusinessScreen(accountEntity);
   }
 
-  // For success screen repository
+  // For success/error screen repository
   public Screen getUpdateBusinessScreen(BusinessEntity be, AccountEntity acc) {
     return new UpdateBusinessScreen(be, acc);
   } 
@@ -130,7 +130,7 @@ public class UpdateBusinessScreenRepository {
         categories.add(category);
         categoryNames.add(category.getName());
     }
-    return new UpdateCategoryScreen(categories, categoryNames, businessEntity);
+    return new UpdateCategoryScreen(categories, categoryNames, be, acc);
   }
 
   private class UpdateCategoryScreen extends PaginationScreen {
