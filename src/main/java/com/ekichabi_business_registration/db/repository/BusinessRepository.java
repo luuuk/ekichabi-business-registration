@@ -16,7 +16,7 @@ public interface BusinessRepository extends CrudRepository<BusinessEntity, Long>
     boolean existsByCategoryAndSubvillage(CategoryEntity category,
                                           SubvillageEntity subvillage);
     List<BusinessEntity> findAllByCategory(CategoryEntity category);
-    List<BusinessEntity> findAllByDistrict(DistrictEntity district);
+    List<BusinessEntity> findAllBySubvillage(SubcategoryEntity subvillage);
     List<BusinessEntity> findAllBySubcategory(SubcategoryEntity subcategory);
     List<BusinessEntity> findAllByVillage(VillageEntity village);
 }
