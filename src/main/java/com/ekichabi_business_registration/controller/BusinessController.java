@@ -2,7 +2,7 @@ package com.ekichabi_business_registration.controller;
 
 import com.ekichabi_business_registration.db.entity.BusinessEntity;
 import com.ekichabi_business_registration.service.BusinessService;
-import com.ekichabi_business_registration.service.InvalidCreationException;
+import com.ekichabi_business_registration.util.exceptions.InvalidCreationException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

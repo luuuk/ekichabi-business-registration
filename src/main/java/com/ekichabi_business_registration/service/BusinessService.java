@@ -7,15 +7,19 @@ import com.ekichabi_business_registration.db.entity.DistrictEntity;
 import com.ekichabi_business_registration.db.entity.SubcategoryEntity;
 import com.ekichabi_business_registration.db.entity.SubvillageEntity;
 import com.ekichabi_business_registration.db.entity.VillageEntity;
+import com.ekichabi_business_registration.db.repository.AccountRepository;
 import com.ekichabi_business_registration.db.repository.BusinessRepository;
 import com.ekichabi_business_registration.db.repository.CategoryRepository;
 import com.ekichabi_business_registration.db.repository.DistrictRepository;
 import com.ekichabi_business_registration.db.repository.SubcategoryRepository;
 import com.ekichabi_business_registration.db.repository.SubvillageRepository;
 import com.ekichabi_business_registration.db.repository.VillageRepository;
+import com.ekichabi_business_registration.util.exceptions.InvalidCreationException;
 import com.opencsv.CSVReaderHeaderAware;
 import com.opencsv.exceptions.CsvValidationException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.FileReader;
@@ -30,12 +34,20 @@ import static com.ekichabi_business_registration.service.CategoryService.SUBSECT
 @Service
 @RequiredArgsConstructor
 public class BusinessService {
+    private static final int PHONE_NUMBERS_V1_COUNT = 3;
+    private static final String COORDINATE_REGEX =
+            "^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|"
+                    + "((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$";
+    private static final String PHONE_NUMBER_REGEX =
+            "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$";
+
     private final BusinessRepository businessRepository;
     private final DistrictRepository districtRepository;
     private final VillageRepository villageRepository;
     private final SubvillageRepository subvillageRepository;
     private final CategoryRepository categoryRepository;
     private final SubcategoryRepository subcategoryRepository;
+    private final AccountRepository accountRepository;
     private final AccountEntity v1AdminAccount =
             AccountEntity.builder()
                     .name("V1_ADMIN")
@@ -43,7 +55,8 @@ public class BusinessService {
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build();
-    private static final int PHONE_NUMBERS_V1_COUNT = 3;
+
+    private final Logger logger = LoggerFactory.getLogger(BusinessService.class);
 
     public BusinessEntity findBusinessById(Long id) {
         return businessRepository.findById(id).get();
@@ -55,6 +68,7 @@ public class BusinessService {
         return businessEntities;
     }
 
+    //TODO Luke complete this before demo on 2/23
     public BusinessEntity createBusiness(BusinessEntity businessEntity)
             throws InvalidCreationException {
 
@@ -63,9 +77,112 @@ public class BusinessService {
             throw new InvalidCreationException();
         }
 
-        //TODO Luke add more validation steps to this method
+        // If business has no category or has a category not in the DB, throw exception
+        if (businessEntity.getCategory() == null
+                || !categoryRepository.existsByName(businessEntity.getCategory().getName())) {
+            logger.error("Business has no category or has a category not in the DB");
+            throw new InvalidCreationException();
+        }
+        businessEntity.setCategory(
+                categoryRepository.findByName(businessEntity.getCategory().getName()));
+
+        // If business has a subcategory not associated with its category,
+        // write new subcategory to db
+        for (SubcategoryEntity subcategory : businessEntity.getSubcategories()) {
+            if (!subcategoryRepository.existsByNameAndCategory(subcategory.getName(),
+                    subcategory.getCategory())) {
+                logger.info("Writing new subcategory to DB for Category");
+                subcategory.setCategory(
+                        categoryRepository.findByName(businessEntity.getCategory().getName()));
+                subcategoryRepository.save(subcategory);
+            }
+        }
+
+        // If business has no district, throw exception
+        if (businessEntity.getSubvillage().getVillage().getDistrict() == null) {
+            logger.error("Business has no district");
+            throw new InvalidCreationException();
+        }
+
+        // If business has no village, throw exception
+        if (businessEntity.getSubvillage().getVillage() == null) {
+            logger.error("Business has no village");
+            throw new InvalidCreationException();
+        }
+
+        // If district not yet in DB, throw exception
+        if (!districtRepository.existsByName(
+                businessEntity.getSubvillage().getVillage().getDistrict().getName())) {
+            logger.error("District not in DB");
+            throw new InvalidCreationException();
+        }
+
+        // Find existing district in DB and set business to point to that entity
+        DistrictEntity existingBusinessDistrict = districtRepository.findByName(
+                businessEntity.getSubvillage().getVillage().getDistrict().getName());
+        businessEntity.getSubvillage().getVillage().setDistrict(existingBusinessDistrict);
+
+        // If village not yet in DB, add mapping to district
+        if (!villageRepository.existsByNameAndDistrict(
+                businessEntity.getSubvillage().getVillage().getName(), existingBusinessDistrict)) {
+            logger.info("Writing new village to DB for district");
+            businessEntity.getSubvillage().getVillage().setDistrict(existingBusinessDistrict);
+            villageRepository.save(businessEntity.getSubvillage().getVillage());
+        }
+
+        // Find existing village in DB and set business to point to that entity
+        VillageEntity existingBusinessVillage = villageRepository.findByNameAndDistrict(
+                businessEntity.getSubvillage().getVillage().getName(), existingBusinessDistrict);
+        businessEntity.getSubvillage().setVillage(existingBusinessVillage);
+
+        // If subvillage not yet in DB, add mapping to village
+        if (!subvillageRepository.existsByNameAndVillage(businessEntity.getSubvillage().getName(),
+                existingBusinessVillage)) {
+            logger.info("Writing new subvillage to DB for village");
+            businessEntity.getSubvillage().setVillage(existingBusinessVillage);
+            subvillageRepository.save(businessEntity.getSubvillage());
+        }
+
+        SubvillageEntity existingBusinessSubvillage =
+                subvillageRepository.findByNameAndVillage(businessEntity.getSubvillage().getName(),
+                        existingBusinessVillage);
+        businessEntity.setSubvillage(existingBusinessSubvillage);
+
+        // If business has no owners, throw exception
+        if (businessEntity.getOwners() == null || businessEntity.getOwners().isEmpty()) {
+            logger.error("Business has no owners");
+            throw new InvalidCreationException();
+        }
+
+        // Find existing owners in DB and use them
+        for (AccountEntity owner : businessEntity.getOwners()) {
+            AccountEntity existingAccount = accountRepository.findByName(owner.getName());
+
+            // If owner already exists in DB use it, otherwise use JPA persist to make a new owner
+            if (existingAccount != null) {
+                businessEntity.getOwners().remove(owner);
+                businessEntity.getOwners().add(existingAccount);
+            }
+        }
+
+        // If business phone numbers are not of right format, throw exception
+        for (String phoneNumber : businessEntity.getPhoneNumbers()) {
+            if (!phoneNumber.matches(PHONE_NUMBER_REGEX)) {
+                logger.error("Business phone number does not match expected format");
+                throw new InvalidCreationException();
+            }
+        }
+
+        // If business coordinates are not of right format, throw exception
+        if (businessEntity.getCoordinates() != null
+                && !businessEntity.getCoordinates().matches(COORDINATE_REGEX)) {
+            logger.error("Business coordinates do not match expected format");
+            throw new InvalidCreationException();
+        }
+
         return businessRepository.save(businessEntity);
     }
+
 
     /**
      * Creates businesses from V1 Census data

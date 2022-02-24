@@ -5,7 +5,7 @@ import com.ekichabi_business_registration.screens.stereotype.InputScreen;
 import com.ekichabi_business_registration.screens.stereotype.PasswordScreen;
 import com.ekichabi_business_registration.screens.stereotype.Screen;
 import com.ekichabi_business_registration.service.AccountService;
-import com.ekichabi_business_registration.service.InvalidCreationException;
+import com.ekichabi_business_registration.util.exceptions.InvalidCreationException;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.apache.logging.log4j.util.Strings;
