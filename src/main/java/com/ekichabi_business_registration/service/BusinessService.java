@@ -169,13 +169,14 @@ public class BusinessService {
             }
         }
 
+        // TODO Figure out what makes sense for phone number formatting
         // If business phone numbers are not of right format, throw exception
-        for (String phoneNumber : businessEntity.getPhoneNumbers()) {
-            if (!phoneNumber.matches(PHONE_NUMBER_REGEX)) {
-                logger.error("Business phone number does not match expected format");
-                throw new InvalidCreationException();
-            }
-        }
+//        for (String phoneNumber : businessEntity.getPhoneNumbers()) {
+//            if (!phoneNumber.matches(PHONE_NUMBER_REGEX)) {
+//                logger.error("Business phone number does not match expected format");
+//                throw new InvalidCreationException();
+//            }
+//        }
 
         // If business coordinates are not of right format, throw exception
         if (businessEntity.getCoordinates() != null
