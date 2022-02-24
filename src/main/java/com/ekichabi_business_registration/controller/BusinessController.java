@@ -57,4 +57,88 @@ public class BusinessController {
     }
 
     // TODO implement remaining endpoints here
+    @GetMapping("business/{id}")
+    public ResponseEntity<?> getBusinessNameById(@PathVariable String id) {
+        logger.info("Getting business name with id: " + id);
+        try {
+            BusinessEntity entity = service.findBusinessById(Long.parseLong(id));
+            return ResponseEntity.ok().body(entity.name);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Could not find business with ID " + id
+                    + ". Make sure your ID is numerical");
+        }
+    }
+    
+    @GetMapping("business/{id}")
+    public ResponseEntity<?> getBusinessCategoryById(@PathVariable String id) {
+        logger.info("Getting business category with id: " + id);
+        try {
+            BusinessEntity entity = service.findBusinessById(Long.parseLong(id));
+            return ResponseEntity.ok().body(entity.category);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Could not find business with ID " + id
+                    + ". Make sure your ID is numerical");
+        }
+    }
+    
+    @GetMapping("business/{id}")
+    public ResponseEntity<?> getBusinessSubcategoriesById(@PathVariable String id) {
+        logger.info("Getting business subcategories with id: " + id);
+        try {
+            BusinessEntity entity = service.findBusinessById(Long.parseLong(id));
+            return ResponseEntity.ok().body(entity.subcategories);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Could not find business with ID " + id
+                    + ". Make sure your ID is numerical");
+        }
+    }
+    
+    @GetMapping("business/{id}")
+    public ResponseEntity<?> getBusinessSubvillageById(@PathVariable String id) {
+        logger.info("Getting business subvillage with id: " + id);
+        try {
+            BusinessEntity entity = service.findBusinessById(Long.parseLong(id));
+            return ResponseEntity.ok().body(entity.subvillage);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Could not find business with ID " + id
+                    + ". Make sure your ID is numerical");
+        }
+    }
+    
+    @GetMapping("business/{id}")
+    public ResponseEntity<?> getBusinessCoordinatesById(@PathVariable String id) {
+        logger.info("Getting business coordinates with id: " + id);
+        try {
+            BusinessEntity entity = service.findBusinessById(Long.parseLong(id));
+            return ResponseEntity.ok().body(entity.coordinates);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Could not find business with ID " + id
+                    + ". Make sure your ID is numerical");
+        }
+    }
+    
+    @GetMapping("business/{id}")
+    public ResponseEntity<?> getBusinessOwnersById(@PathVariable String id) {
+        logger.info("Getting business owners with id: " + id);
+        try {
+            BusinessEntity entity = service.findBusinessById(Long.parseLong(id));
+            return ResponseEntity.ok().body(entity.owners);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Could not find business with ID " + id
+                    + ". Make sure your ID is numerical");
+        }
+    }
+    
+    @GetMapping("business/{id}")
+    public ResponseEntity<?> getBusinessPhoneNumbersById(@PathVariable String id) {
+        logger.info("Getting business phone numbers with id: " + id);
+        try {
+            BusinessEntity entity = service.findBusinessById(Long.parseLong(id));
+            return ResponseEntity.ok().body(entity.phoneNumbers);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Could not find business with ID " + id
+                    + ". Make sure your ID is numerical");
+        }
+    }
+    
 }
