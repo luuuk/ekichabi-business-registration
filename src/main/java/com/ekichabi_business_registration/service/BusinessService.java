@@ -73,26 +73,6 @@ public class BusinessService {
         return businessRepository.findAllByCategory(existingCategory);
     }
 
-    public List<BusinessEntity> findAllBusinessesBySubcategory(
-        String subcategory, String category) {
-        CategoryEntity existingCategory = categoryRepository.findByName(category);
-        SubcategoryEntity existingSubcategory =
-            subcategoryRepository.findByNameAndCategory(subcategory, existingCategory);
-        return businessRepository.findAllBySubcategory(existingSubcategory);
-    }
-
-    public List<BusinessEntity> findAllBusinessesByVillage(String village, String district) {
-        DistrictEntity existingDistrict = districtRepository.findByName(district);
-        VillageEntity existingVillage =
-            villageRepository.findByNameAndDistrict(village, existingDistrict);
-        return businessRepository.findAllByVillage(existingVillage);
-    }
-
-    public List<BusinessEntity> findAllBusinessesByDistrict(String district) {
-        DistrictEntity existingDistrict = districtRepository.findByName(district);
-        return businessRepository.findAllByDistrict(existingDistrict);
-    }
-
     public BusinessEntity createBusiness(BusinessEntity businessEntity)
             throws InvalidCreationException {
 
