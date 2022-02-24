@@ -1,6 +1,8 @@
 package com.ekichabi_business_registration.screens.repository;
 
+import com.ekichabi_business_registration.db.entity.AccountEntity;
 import com.ekichabi_business_registration.screens.stereotype.Screen;
+import com.ekichabi_business_registration.screens.stereotype.SimpleScreen;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -19,28 +21,45 @@ public class SuccessScreenRepository {
         return new SuccessScreen(reason);
     }
 
-    public class SuccessScreen extends Screen {
+    public Screen getSignedInSuccessScreen(String reason, AccountEntity accountEntity) {
+        return new SignedInSuccessScreen(reason, accountEntity);
+    }
+
+    public class SuccessScreen extends SimpleScreen {
         @Getter
         private final String reason;
-        private int count = 0;
 
         public SuccessScreen(String reason) {
             super(true);
             this.reason = reason;
             line("Success");
             line(reason);
-            line("99. Back");
+            line("99. Continue");
+            addAction(s -> {
+                if (s.equals("99")) {
+                    return getNextScreen();
+                }
+                return null;
+            });
+        }
+
+        protected Screen getNextScreen() {
+            return welcomeScreenRepository.getWelcomeScreen();
+        }
+    }
+
+    public class SignedInSuccessScreen extends SuccessScreen {
+
+        private final AccountEntity accountEntity;
+
+        public SignedInSuccessScreen(String reason, AccountEntity accountEntity) {
+            super(reason);
+            this.accountEntity = accountEntity;
         }
 
         @Override
-        public Screen doAction(char c) {
-            if (c == '9') {
-                count++;
-                if (count == 2) {
-                    return welcomeScreenRepository.getWelcomeScreen();
-                }
-            }
-            return this;
+        protected Screen getNextScreen() {
+            return welcomeScreenRepository.getSignedInWelcomeScreen(accountEntity);
         }
     }
 }

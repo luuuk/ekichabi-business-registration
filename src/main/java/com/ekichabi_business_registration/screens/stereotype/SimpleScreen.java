@@ -1,6 +1,7 @@
 package com.ekichabi_business_registration.screens.stereotype;
 
 import lombok.Getter;
+import lombok.val;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +15,11 @@ public class SimpleScreen extends Screen {
 
     public final Screen doAction(char c) {
         if (c == '*') {
+            System.out.println(buffer);
+            val command = buffer.toString();
+            buffer = new StringBuilder();
             for (Action action : actions) {
-                Screen screen = action.apply(buffer.toString());
+                Screen screen = action.apply(command);
                 if (screen != null) {
                     return screen;
                 }

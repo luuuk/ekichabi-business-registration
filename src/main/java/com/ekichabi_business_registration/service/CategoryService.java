@@ -19,7 +19,7 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final SubcategoryRepository subcategoryRepository;
 
-    private static final int SUBSECTOR_V1_COUNT = 4;
+    protected static final int SUBSECTOR_V1_COUNT = 4;
 
     public int createCategories() {
         int createdCategories = 0;
