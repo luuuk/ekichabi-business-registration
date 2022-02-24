@@ -27,7 +27,8 @@ public class ErrorScreenRepository {
         return new SignedInErrorScreen(reason, accountEntity);
     }
 
-    public Screen getBusinessUpdateErrorScreen(String reason, AccountEntity acc, BusinessEntity be) {
+    public Screen getBusinessUpdateErrorScreen(String reason,
+            AccountEntity acc, BusinessEntity be) {
         return new BusinessUpdateErrorScreen(reason, acc, be);
     }
 

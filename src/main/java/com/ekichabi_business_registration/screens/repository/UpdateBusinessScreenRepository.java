@@ -1,6 +1,5 @@
 package com.ekichabi_business_registration.screens.repository;
 
-import com.ekichabi_business_registration.service.BusinessService;
 import com.ekichabi_business_registration.db.entity.BusinessEntity;
 
 import java.util.ArrayList;
@@ -23,8 +22,6 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 
-import org.apache.logging.log4j.util.Strings;
-import org.hibernate.sql.Update;
 
 @Component
 @RequiredArgsConstructor
@@ -47,7 +44,7 @@ public class UpdateBusinessScreenRepository {
   // For success/error screen repository
   public Screen getUpdateBusinessScreen(BusinessEntity be, AccountEntity acc) {
     return new UpdateBusinessScreen(be, acc);
-  } 
+  }
 
   private Screen getSelectBusinessScreen(AccountEntity accountEntity) {
     List<BusinessEntity> businesses = new ArrayList<>();
@@ -115,7 +112,7 @@ public class UpdateBusinessScreenRepository {
             return new UpdateCoordinatesScreen(be, acc);
           case "99":
             return welcomeScreenRepository.getSignedInWelcomeScreen(acc);
-          default: 
+          default:
             return this;
         }
       });
@@ -154,7 +151,7 @@ public class UpdateBusinessScreenRepository {
   }
 
   private class UpdateNameScreen extends InputScreen {
-    private final BusinessEntity be; 
+    private final BusinessEntity be;
     private final AccountEntity acc;
 
     UpdateNameScreen(BusinessEntity be, AccountEntity acc) {
@@ -292,7 +289,7 @@ public class UpdateBusinessScreenRepository {
     }
   }
 
-  private Screen getUpdateSubcategoryScreen(BusinessEntity be, CategoryEntity ce, 
+  private Screen getUpdateSubcategoryScreen(BusinessEntity be, CategoryEntity ce,
                                             AccountEntity acc) {
     // TODO: implement
     List<SubcategoryEntity> subcategories = new ArrayList<>();
@@ -309,7 +306,7 @@ public class UpdateBusinessScreenRepository {
     private final BusinessEntity be;
     private final AccountEntity acc;
 
-    UpdateSubcategoryScreen(List<SubcategoryEntity> subcats, 
+    UpdateSubcategoryScreen(List<SubcategoryEntity> subcats,
         List<String> subCatNames, BusinessEntity be, AccountEntity acc) {
       super(subCatNames, "Select new subcategory");
       this.be = be;

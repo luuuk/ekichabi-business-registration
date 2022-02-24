@@ -28,7 +28,8 @@ public class SuccessScreenRepository {
         return new SignedInSuccessScreen(reason, accountEntity);
     }
 
-    public Screen getBusinessUpdateSuccessScreen(String reason, AccountEntity acc, BusinessEntity be) {
+    public Screen getBusinessUpdateSuccessScreen(String reason,
+                AccountEntity acc, BusinessEntity be) {
         return new BusinessUpdateSuccessScreen(reason, acc, be);
     }
 

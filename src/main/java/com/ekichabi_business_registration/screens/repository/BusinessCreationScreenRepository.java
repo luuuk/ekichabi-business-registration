@@ -156,7 +156,8 @@ public class BusinessCreationScreenRepository {
 
         @Override
         protected Screen selected(int i) {
-            SubvillageEntity subvil = SubvillageEntity.builder().name("*").village(villages.get(i)).build();
+            SubvillageEntity subvil = SubvillageEntity.builder()
+                        .name("*").village(villages.get(i)).build();
             businessEntity.setSubvillage(subvil);
             return new CreateBusinessConfirmationScreen(businessEntity, villages.get(i));
         }
