@@ -33,11 +33,12 @@ public class ErrorScreenRepository {
 
         @Override
         public Screen doAction(char c) {
-            if (c == '9') {
-                count++;
+            if (c == '*') {
                 if (count == 2) {
                     return welcomeScreenRepository.getWelcomeScreen();
                 }
+            } else if (c == '9') {
+                count++;
             }
             return this;
         }

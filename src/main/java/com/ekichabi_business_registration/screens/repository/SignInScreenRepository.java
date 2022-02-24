@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 public class SignInScreenRepository {
     private final AccountService accountService;
     private final ErrorScreenRepository errorScreenRepository;
+    private final SuccessScreenRepository successScreenRepository;
 
     Screen getSignInScreen() {
         return new SignInScreen();
@@ -42,9 +43,8 @@ public class SignInScreenRepository {
         public Screen getNextScreen(String password) {
             val accountEntityOptional = accountService.login(username, password);
             if (accountEntityOptional.isPresent()) {
-                return Screen.conScreen()
-                        .line("SUCCESS! username:" + username)
-                        .line("The rest of the workflow is unfinished");
+                return successScreenRepository.getSignedInSuccessScreen(
+                        "Login successful", accountEntityOptional.get());
             } else {
                 return errorScreenRepository.getErrorScreen("Login failed");
             }

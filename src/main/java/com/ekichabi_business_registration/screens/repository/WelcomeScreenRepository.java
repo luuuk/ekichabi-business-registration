@@ -1,5 +1,6 @@
 package com.ekichabi_business_registration.screens.repository;
 
+import com.ekichabi_business_registration.db.entity.AccountEntity;
 import com.ekichabi_business_registration.screens.stereotype.Screen;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -9,20 +10,9 @@ import org.springframework.context.annotation.Configuration;
 public class WelcomeScreenRepository {
     private final SignupScreenRepository signupScreenRepository;
     private final SignInScreenRepository signInScreenRepository;
+    private final BusinessCreationScreenRepository businessCreationScreenRepository;
 
     public static Screen getBrowseBusinessScreen() {
-        return null;
-    }
-
-    public static Screen getDeleteBusinessScreen() {
-        return null;
-    }
-
-    public static Screen getEditBusinessScreen() {
-        return null;
-    }
-
-    public static Screen getRegisterBusinessScreen() {
         return null;
     }
 
@@ -46,6 +36,18 @@ public class WelcomeScreenRepository {
                 });
     }
 
+    public static Screen getDeleteBusinessScreen() {
+        return null;
+    }
+
+    public static Screen getEditBusinessScreen() {
+        return null;
+    }
+
+    public static Screen getRegisterBusinessScreen() {
+        return null;
+    }
+
     public Screen getWelcomeScreen() {
         return Screen.conScreen()
                 .line("Welcome to ekichabi 2.0!")
@@ -63,6 +65,42 @@ public class WelcomeScreenRepository {
                             return signupScreenRepository.getSignupScreen();
                         default:
                             return null;
+                    }
+                });
+    }
+
+    public Screen getSignedInWelcomeScreen(AccountEntity accountEntity) {
+        return Screen.conScreen()
+                .line("1. Browse")
+                .line("2. Create business")
+                .line("3. Update business")
+                .line("4. Update account")
+                .line("5. Exit")
+                .addAction(c -> {
+                    switch (c) {
+                        case "1":
+                            // TODO: add browse business functionality
+                            return Screen.conScreen()
+                                    .line("This workflow is unfinished");
+                        case "2":
+                            // TODO: add create business functionality
+                            return businessCreationScreenRepository
+                                    .getBusinessCreationScreen(accountEntity);
+                        case "3":
+                            // TODO: add update business functionality
+                            return Screen.conScreen()
+                                    .line("This workflow is unfinished");
+                        case "4":
+                            // TODO: add update account functionality
+                            return Screen.conScreen()
+                                    .line("This workflow is unfinished");
+                        case "5":
+                            // TODO: add session termination functionality
+                            return Screen.conScreen()
+                                    .line("This workflow is unfinished");
+                        default:
+                            return getSignedInWelcomeScreen(accountEntity);
+
                     }
                 });
     }

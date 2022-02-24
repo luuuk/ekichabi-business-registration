@@ -57,7 +57,7 @@ public class SignupScreenRepository {
             super();
             this.username = username;
             this.password = password;
-            line("Sign up - enter password");
+            line("Sign up - confirm password");
         }
 
         public boolean hasRepeated() {
@@ -81,10 +81,11 @@ public class SignupScreenRepository {
     private class SignupConfirmationScreen extends Screen {
         private final String username;
         private final String password;
+        private final StringBuilder sb = new StringBuilder();
 
 
         SignupConfirmationScreen(String username, String password) {
-            super(false);
+            super(true);
             this.username = username;
             this.password = password;
             line("username: " + username);
@@ -95,24 +96,29 @@ public class SignupScreenRepository {
 
         @Override
         public Screen doAction(char c) {
-            switch (c) {
-                case '0':
-                    AccountEntity accountEntity = AccountEntity.builder()
-                            .name(username)
-                            .password(password)
-                            .build();
-                    try {
-                        accountService.createBusiness(accountEntity);
-                    } catch (InvalidCreationException e) {
-                        return errorScreenRepository.getErrorScreen(
-                                "User creation error");
-                    }
-                    return successScreenRepository.getSuccessScreen(
-                            "Account registration success");
-                case '1':
-                    return welcomeScreenRepository.getWelcomeScreen();
-                default:
-                    return this;
+            if (c == '*') {
+                switch (sb.charAt(0)) {
+                    case '0':
+                        AccountEntity accountEntity = AccountEntity.builder()
+                                .name(username)
+                                .password(password)
+                                .build();
+                        try {
+                            accountService.createBusiness(accountEntity);
+                        } catch (InvalidCreationException e) {
+                            return errorScreenRepository.getErrorScreen(
+                                    "User creation error");
+                        }
+                        return successScreenRepository.getSuccessScreen(
+                                "Account registration success");
+                    case '1':
+                        return welcomeScreenRepository.getWelcomeScreen();
+                    default:
+                        return this;
+                }
+            } else {
+                sb.append(c);
+                return this;
             }
 
         }

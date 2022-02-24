@@ -10,4 +10,6 @@ public interface SubcategoryRepository extends CrudRepository<SubcategoryEntity,
     boolean existsByNameAndCategory(String subcategoryName, CategoryEntity parentCategory);
 
     SubcategoryEntity findByNameAndCategory(String name, CategoryEntity category);
+
+    Iterable<SubcategoryEntity> findByCategory(CategoryEntity category);
 }
