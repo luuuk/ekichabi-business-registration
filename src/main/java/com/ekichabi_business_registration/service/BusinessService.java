@@ -89,6 +89,8 @@ public class BusinessService {
             if (!subcategoryRepository.existsByNameAndCategory(subcategory.getName(),
                     subcategory.getCategory())) {
                 logger.info("Writing new subcategory to DB for Category");
+                subcategory.setCategory(
+                        categoryRepository.findByName(businessEntity.getCategory().getName()));
                 subcategoryRepository.save(subcategory);
             }
         }
@@ -105,33 +107,47 @@ public class BusinessService {
             throw new InvalidCreationException();
         }
 
+        // If district not yet in DB, throw exception
+        if (!districtRepository.existsByName(
+                businessEntity.getSubvillage().getVillage().getDistrict().getName())) {
+            logger.error("District not in DB");
+            throw new InvalidCreationException();
+        }
+
+        DistrictEntity existingBusinessDistrict = districtRepository.findByName(
+                businessEntity.getSubvillage().getVillage().getDistrict().getName());
+
         // If village not yet in DB, add mapping to district
         if (!villageRepository.existsByNameAndDistrict(
-                businessEntity.getSubvillage().getVillage().getName(),
-                businessEntity.getSubvillage().getVillage().getDistrict())) {
+                businessEntity.getSubvillage().getVillage().getName(), existingBusinessDistrict)) {
             logger.info("Writing new village to DB for district");
+            businessEntity.getSubvillage().getVillage().setDistrict(existingBusinessDistrict);
             villageRepository.save(businessEntity.getSubvillage().getVillage());
         }
 
+        VillageEntity existingBusinessVillage = villageRepository.findByNameAndDistrict(
+                businessEntity.getSubvillage().getVillage().getName(), existingBusinessDistrict);
+
         // If subvillage not yet in DB, add mapping to village
         if (!subvillageRepository.existsByNameAndVillage(businessEntity.getSubvillage().getName(),
-                businessEntity.getSubvillage().getVillage())) {
+                existingBusinessVillage)) {
             logger.info("Writing new subvillage to DB for village");
+            businessEntity.getSubvillage().setVillage(existingBusinessVillage);
             subvillageRepository.save(businessEntity.getSubvillage());
         }
 
         // If business has no owners, throw exception
-        if (businessEntity.getOwners().isEmpty()) {
+        if (businessEntity.getOwners() == null || businessEntity.getOwners().isEmpty()) {
             logger.error("Business has no owners");
             throw new InvalidCreationException();
         }
 
         // If business phone numbers are not of right format, throw exception
         for (String phoneNumber : businessEntity.getPhoneNumbers()) {
-            if (phoneNumber.length() != PHONE_NUMBER_LENGTH) {
-                logger.error("Business phone number is not of correct length");
-                throw new InvalidCreationException();
-            }
+//            if (phoneNumber.length() != PHONE_NUMBER_LENGTH) {
+//                logger.error("Business phone number is not of correct length");
+//                throw new InvalidCreationException();
+//            }
             if (!phoneNumber.matches(PHONE_NUMBER_REGEX)) {
                 logger.error("Business phone number does not match expected format");
                 throw new InvalidCreationException();
@@ -139,7 +155,8 @@ public class BusinessService {
         }
 
         // If business coordinates are not of right format, throw exception
-        if (!businessEntity.getCoordinates().matches(COORDINATE_REGEX)) {
+        if (businessEntity.getCoordinates() != null &&
+                !businessEntity.getCoordinates().matches(COORDINATE_REGEX)) {
             logger.error("Business coordinates do not match expected format");
             throw new InvalidCreationException();
         }
