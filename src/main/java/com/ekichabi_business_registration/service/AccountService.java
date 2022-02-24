@@ -14,7 +14,7 @@ public class AccountService {
 
     private final AccountRepository repository;
 
-    public AccountEntity createBusiness(AccountEntity accountEntity)
+    public AccountEntity createAccount(AccountEntity accountEntity)
             throws InvalidCreationException {
 
         if (accountEntity.getName() == null) {

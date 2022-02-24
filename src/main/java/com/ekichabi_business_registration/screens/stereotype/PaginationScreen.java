@@ -21,7 +21,7 @@ public abstract class PaginationScreen extends SimpleScreen {
         this.title = title;
 
         addAction(s -> {
-            System.out.println(">>>" + s + "<<<");
+            //System.out.println(">>>" + s + "<<<");
             int i;
             try {
                 i = Integer.parseInt(s);

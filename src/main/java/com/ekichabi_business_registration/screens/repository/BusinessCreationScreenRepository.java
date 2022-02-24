@@ -9,6 +9,8 @@ import com.ekichabi_business_registration.screens.stereotype.PaginationScreen;
 import com.ekichabi_business_registration.screens.stereotype.Screen;
 import com.ekichabi_business_registration.screens.stereotype.SimpleScreen;
 
+import com.ekichabi_business_registration.service.BusinessService;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +64,7 @@ public class BusinessCreationScreenRepository {
             if (businessEntity.getName() == null) {
                 return new BusinessCreationScreen(accountEntity, input);
             } else {
-                // List.of(...) creates immutable list, which is not what we want.
+                // TODO: List.of(...) creates immutable list, which is not what we want.
                 businessEntity.setPhoneNumbers(new ArrayList<>(List.of(input)));
                 businessEntity.setOwners(new ArrayList<>(List.of(accountEntity)));
                 return getSelectCategoryScreen(businessEntity);
@@ -161,12 +163,12 @@ public class BusinessCreationScreenRepository {
             super(true);
 
             line("Add additional information");
-            line("1. Add subcategory");
+            line("1. Add subcategories (max 3)");
             line("2. Add subvillage");
             line("3. Add coordinates");
             line("4. Confirm creation");
             line("5. Cancel creation");
-
+            // TODO: allow adding multiple phone numbers
 
             addAction(s -> {
                 switch (s) {

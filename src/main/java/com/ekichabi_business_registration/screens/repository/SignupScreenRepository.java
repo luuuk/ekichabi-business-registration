@@ -1,9 +1,7 @@
 package com.ekichabi_business_registration.screens.repository;
 
 import com.ekichabi_business_registration.db.entity.AccountEntity;
-import com.ekichabi_business_registration.screens.stereotype.InputScreen;
-import com.ekichabi_business_registration.screens.stereotype.PasswordScreen;
-import com.ekichabi_business_registration.screens.stereotype.Screen;
+import com.ekichabi_business_registration.screens.stereotype.*;
 import com.ekichabi_business_registration.service.AccountService;
 import com.ekichabi_business_registration.service.InvalidCreationException;
 import lombok.RequiredArgsConstructor;
@@ -78,50 +76,39 @@ public class SignupScreenRepository {
         }
     }
 
-    private class SignupConfirmationScreen extends Screen {
+    private class SignupConfirmationScreen extends SimpleScreen {
         private final String username;
         private final String password;
-        private final StringBuilder sb = new StringBuilder();
-
 
         SignupConfirmationScreen(String username, String password) {
             super(true);
             this.username = username;
             this.password = password;
-            line("username: " + username);
-            line("password: " + Strings.repeat("*", password.length()));
-            line("0. create");
-            line("1. cancel");
-        }
-
-        @Override
-        public Screen doAction(char c) {
-            if (c == '*') {
-                switch (sb.charAt(0)) {
-                    case '0':
+            line("Username: " + username);
+            line("Password: " + Strings.repeat("*", password.length()));
+            line("0. Create");
+            line("1. Cancel");
+            addAction(s -> {
+                switch (s) {
+                    case "0":
                         AccountEntity accountEntity = AccountEntity.builder()
                                 .name(username)
                                 .password(password)
                                 .build();
                         try {
-                            accountService.createBusiness(accountEntity);
+                            accountService.createAccount(accountEntity);
                         } catch (InvalidCreationException e) {
                             return errorScreenRepository.getErrorScreen(
                                     "User creation error");
                         }
                         return successScreenRepository.getSuccessScreen(
                                 "Account registration success");
-                    case '1':
+                    case "1":
                         return welcomeScreenRepository.getWelcomeScreen();
                     default:
                         return this;
                 }
-            } else {
-                sb.append(c);
-                return this;
-            }
-
+            });
         }
-
     }
 }
