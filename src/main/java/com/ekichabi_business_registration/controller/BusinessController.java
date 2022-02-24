@@ -1,7 +1,7 @@
 package com.ekichabi_business_registration.controller;
 
 import com.ekichabi_business_registration.db.entity.BusinessEntity;
-import com.ekichabi_business_registration.db.entity.CategoryEntity;
+//import com.ekichabi_business_registration.db.entity.CategoryEntity;
 import com.ekichabi_business_registration.service.BusinessService;
 import com.ekichabi_business_registration.util.exceptions.InvalidCreationException;
 import lombok.RequiredArgsConstructor;
