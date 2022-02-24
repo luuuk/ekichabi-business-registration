@@ -17,6 +17,8 @@ import com.ekichabi_business_registration.util.exceptions.InvalidCreationExcepti
 import com.opencsv.CSVReaderHeaderAware;
 import com.opencsv.exceptions.CsvValidationException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.FileReader;
@@ -36,6 +38,8 @@ public class BusinessService {
     private static final String COORDINATE_REGEX =
             "^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|"
                     + "((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$";
+    private static final String PHONE_NUMBER_REGEX =
+            "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$";
 
     private final BusinessRepository businessRepository;
     private final DistrictRepository districtRepository;
@@ -50,6 +54,8 @@ public class BusinessService {
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build();
+
+    private final Logger logger = LoggerFactory.getLogger(BusinessService.class);
 
     public BusinessEntity findBusinessById(Long id) {
         return businessRepository.findById(id).get();
@@ -73,6 +79,7 @@ public class BusinessService {
         // If business has no category or has a category not in the DB, throw exception
         if (businessEntity.getCategory() == null
                 || !categoryRepository.existsByName(businessEntity.getCategory().getName())) {
+            logger.error("Business has no category or has a category not in the DB");
             throw new InvalidCreationException();
         }
 
@@ -81,17 +88,20 @@ public class BusinessService {
         for (SubcategoryEntity subcategory : businessEntity.getSubcategories()) {
             if (!subcategoryRepository.existsByNameAndCategory(subcategory.getName(),
                     subcategory.getCategory())) {
+                logger.info("Writing new subcategory to DB for Category");
                 subcategoryRepository.save(subcategory);
             }
         }
 
         // If business has no district, throw exception
         if (businessEntity.getSubvillage().getVillage().getDistrict() == null) {
+            logger.error("Business has no district");
             throw new InvalidCreationException();
         }
 
         // If business has no village, throw exception
         if (businessEntity.getSubvillage().getVillage() == null) {
+            logger.error("Business has no village");
             throw new InvalidCreationException();
         }
 
@@ -99,29 +109,40 @@ public class BusinessService {
         if (!villageRepository.existsByNameAndDistrict(
                 businessEntity.getSubvillage().getVillage().getName(),
                 businessEntity.getSubvillage().getVillage().getDistrict())) {
+            logger.info("Writing new village to DB for district");
             villageRepository.save(businessEntity.getSubvillage().getVillage());
         }
 
         // If subvillage not yet in DB, add mapping to village
         if (!subvillageRepository.existsByNameAndVillage(businessEntity.getSubvillage().getName(),
                 businessEntity.getSubvillage().getVillage())) {
+            logger.info("Writing new subvillage to DB for village");
             subvillageRepository.save(businessEntity.getSubvillage());
         }
 
         // If business has no owners, throw exception
         if (businessEntity.getOwners().isEmpty()) {
+            logger.error("Business has no owners");
             throw new InvalidCreationException();
         }
 
         // If business phone numbers are not of right format, throw exception
         for (String phoneNumber : businessEntity.getPhoneNumbers()) {
             if (phoneNumber.length() != PHONE_NUMBER_LENGTH) {
+                logger.error("Business phone number is not of correct length");
                 throw new InvalidCreationException();
             }
-            // TODO check phone number regex
+            if (!phoneNumber.matches(PHONE_NUMBER_REGEX)) {
+                logger.error("Business phone number does not match expected format");
+                throw new InvalidCreationException();
+            }
         }
 
-        //TODO check coordinate regex
+        // If business coordinates are not of right format, throw exception
+        if (!businessEntity.getCoordinates().matches(COORDINATE_REGEX)) {
+            logger.error("Business coordinates do not match expected format");
+            throw new InvalidCreationException();
+        }
 
         return businessRepository.save(businessEntity);
     }
