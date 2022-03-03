@@ -15,6 +15,7 @@ import com.ekichabi_business_registration.db.repository.SubcategoryRepository;
 import com.ekichabi_business_registration.db.repository.SubvillageRepository;
 import com.ekichabi_business_registration.db.repository.VillageRepository;
 import com.ekichabi_business_registration.util.exceptions.InvalidCreationException;
+import com.ekichabi_business_registration.util.exceptions.InvalidUpdateException;
 import com.opencsv.CSVReaderHeaderAware;
 import com.opencsv.exceptions.CsvValidationException;
 import lombok.RequiredArgsConstructor;
@@ -75,7 +76,96 @@ public class BusinessService {
 
     public BusinessEntity createBusiness(BusinessEntity businessEntity)
             throws InvalidCreationException {
+        return businessRepository.save(
+                validateBusinessEntityAndCreateChildEntities(businessEntity));
+    }
 
+    /**
+     * Creates businesses from V1 Census data
+     */
+    public int createBusinesses() {
+        int created = 0;
+        try {
+            CSVReaderHeaderAware csvReaderHeaderAware = new CSVReaderHeaderAware(
+                    new FileReader("src/main/resources/static/census_full.csv"));
+            Map<String, String> v1Entity;
+            while ((v1Entity = csvReaderHeaderAware.readMap()) != null) {
+
+                // Confirm this is a new business with all new relations
+                DistrictEntity district =
+                        districtRepository.findByName(v1Entity.get("district"));
+                VillageEntity village =
+                        villageRepository.findByNameAndDistrict(v1Entity.get("kijiji"),
+                                district);
+                SubvillageEntity subvillage =
+                        subvillageRepository.findByNameAndVillage(v1Entity.get("subvillage"),
+                                village);
+
+                CategoryEntity category =
+                        categoryRepository.findByName(v1Entity.get("sector"));
+
+                List<SubcategoryEntity> subcategories = new ArrayList<>();
+
+                for (int i = 1; i <= SUBSECTOR_V1_COUNT; i++) {
+                    if (!v1Entity.get("subsector_eng_" + i).isEmpty()) {
+
+                        subcategories.add(subcategoryRepository.findByNameAndCategory(
+                                v1Entity.get("subsector_eng_" + i), category));
+                    }
+                }
+
+                List<String> phoneNumbers = new ArrayList<>();
+
+                for (int i = 1; i <= PHONE_NUMBERS_V1_COUNT; i++) {
+                    if (!v1Entity.get("mobile_number_" + i).isEmpty()) {
+                        phoneNumbers.add(v1Entity.get("mobile_number_" + i));
+                    }
+                }
+
+                //TODO check business uniqueness on subcategories as well
+                //TODO current limitation is that hibernate (I think) caps insert transactions at
+                // 500 per request? Need to insert more than that
+                if (!businessRepository.existsByCategoryAndSubvillage(category, subvillage)) {
+                    BusinessEntity entity =
+                            BusinessEntity.builder()
+                                    .name(v1Entity.get("firm_name"))
+                                    .subvillage(subvillage)
+                                    .subcategories(subcategories)
+                                    .category(category)
+                                    .owners(new ArrayList<>(List.of(v1AdminAccount)))
+                                    // .owner(v1AdminAccount)
+                                    .phoneNumbers(phoneNumbers)
+                                    .createdAt(LocalDateTime.now())
+                                    .updatedAt(LocalDateTime.now())
+                                    .build();
+                    businessRepository.save(entity);
+                    created++;
+                }
+            }
+            csvReaderHeaderAware.close();
+        } catch (IOException | CsvValidationException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        return created;
+    }
+
+    public BusinessEntity updateBusiness(BusinessEntity businessEntity)
+            throws InvalidUpdateException {
+        try {
+            BusinessEntity existing = businessRepository.findById(businessEntity.getId()).get();
+            //TODO some validation checks are not necessary with update operation (eg updating a business name is not mandatory every time).
+            // Figure out how to validate on patch requests
+            validateBusinessEntityAndCreateChildEntities(businessEntity);
+            businessRepository.save(existing);
+            return existing;
+        } catch (InvalidCreationException e) {
+            throw new InvalidUpdateException();
+        }
+    }
+
+    private BusinessEntity validateBusinessEntityAndCreateChildEntities(
+            BusinessEntity businessEntity) throws InvalidCreationException {
         // If business has no name throw exception
         if (businessEntity.getName() == null) {
             throw new InvalidCreationException();
@@ -87,6 +177,7 @@ public class BusinessService {
             logger.error("Business has no category or has a category not in the DB");
             throw new InvalidCreationException();
         }
+
         businessEntity.setCategory(
                 categoryRepository.findByName(businessEntity.getCategory().getName()));
 
@@ -185,77 +276,6 @@ public class BusinessService {
             throw new InvalidCreationException();
         }
 
-        return businessRepository.save(businessEntity);
-    }
-
-
-    /**
-     * Creates businesses from V1 Census data
-     */
-    public int createBusinesses() {
-        int created = 0;
-        try {
-            CSVReaderHeaderAware csvReaderHeaderAware = new CSVReaderHeaderAware(
-                    new FileReader("src/main/resources/static/census_full.csv"));
-            Map<String, String> v1Entity;
-            while ((v1Entity = csvReaderHeaderAware.readMap()) != null) {
-
-                // Confirm this is a new business with all new relations
-                DistrictEntity district =
-                        districtRepository.findByName(v1Entity.get("district"));
-                VillageEntity village =
-                        villageRepository.findByNameAndDistrict(v1Entity.get("kijiji"),
-                                district);
-                SubvillageEntity subvillage =
-                        subvillageRepository.findByNameAndVillage(v1Entity.get("subvillage"),
-                                village);
-
-                CategoryEntity category =
-                        categoryRepository.findByName(v1Entity.get("sector"));
-
-                List<SubcategoryEntity> subcategories = new ArrayList<>();
-
-                for (int i = 1; i <= SUBSECTOR_V1_COUNT; i++) {
-                    if (!v1Entity.get("subsector_eng_" + i).isEmpty()) {
-
-                        subcategories.add(subcategoryRepository.findByNameAndCategory(
-                                v1Entity.get("subsector_eng_" + i), category));
-                    }
-                }
-
-                List<String> phoneNumbers = new ArrayList<>();
-
-                for (int i = 1; i <= PHONE_NUMBERS_V1_COUNT; i++) {
-                    if (!v1Entity.get("mobile_number_" + i).isEmpty()) {
-                        phoneNumbers.add(v1Entity.get("mobile_number_" + i));
-                    }
-                }
-
-                //TODO check business uniqueness on subcategories as well
-                //TODO current limitation is that hibernate (I think) caps insert transactions at
-                // 500 per request? Need to insert more than that
-                if (!businessRepository.existsByCategoryAndSubvillage(category, subvillage)) {
-                    BusinessEntity entity =
-                            BusinessEntity.builder()
-                                    .name(v1Entity.get("firm_name"))
-                                    .subvillage(subvillage)
-                                    .subcategories(subcategories)
-                                    .category(category)
-                                    .owners(new ArrayList<>(List.of(v1AdminAccount)))
-                                    // .owner(v1AdminAccount)
-                                    .phoneNumbers(phoneNumbers)
-                                    .createdAt(LocalDateTime.now())
-                                    .updatedAt(LocalDateTime.now())
-                                    .build();
-                    businessRepository.save(entity);
-                    created++;
-                }
-            }
-            csvReaderHeaderAware.close();
-        } catch (IOException | CsvValidationException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
-        return created;
+        return businessEntity;
     }
 }
