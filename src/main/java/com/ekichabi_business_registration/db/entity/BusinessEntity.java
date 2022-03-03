@@ -1,13 +1,7 @@
 package com.ekichabi_business_registration.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -55,6 +49,10 @@ public class BusinessEntity {
     @ToString.Include
     @Column(name = "COORDINATES")
     private String coordinates;
+
+    @ToString.Include
+    @Column(name = "VERIFIED")
+    private Boolean verified;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)

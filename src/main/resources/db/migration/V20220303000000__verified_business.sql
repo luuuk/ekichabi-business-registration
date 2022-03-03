@@ -1,0 +1,2 @@
+ALTER TABLE business
+    ADD COLUMN verified INTEGER DEFAULT 0;
