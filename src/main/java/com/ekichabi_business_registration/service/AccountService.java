@@ -15,14 +15,13 @@ public class AccountService {
 
     private final AccountRepository repository;
 
-    public AccountEntity createBusiness(AccountEntity accountEntity)
+    public AccountEntity createAccount(AccountEntity accountEntity)
             throws InvalidCreationException {
 
         if (accountEntity.getName() == null) {
             throw new InvalidCreationException();
         }
 
-        System.out.println(repository.findByName(accountEntity.getName()));
         if (repository.findByName(accountEntity.getName()) != null) {
             throw new InvalidCreationException();
         }

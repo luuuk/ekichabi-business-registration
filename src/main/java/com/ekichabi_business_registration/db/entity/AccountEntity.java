@@ -49,10 +49,12 @@ public class AccountEntity {
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
+    @JsonIgnore
     private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at")
+    @JsonIgnore
     private LocalDateTime updatedAt;
 
     @ManyToMany(mappedBy = "owners")

@@ -104,7 +104,7 @@ public class SignupScreenRepository {
                                 .password(password)
                                 .build();
                         try {
-                            accountService.createBusiness(accountEntity);
+                            accountService.createAccount(accountEntity);
                         } catch (InvalidCreationException e) {
                             return errorScreenRepository.getErrorScreen(
                                     "User creation error");
