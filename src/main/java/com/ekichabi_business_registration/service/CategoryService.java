@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -56,7 +58,7 @@ public class CategoryService {
                 for (int i = 1; i <= SUBSECTOR_V1_COUNT; i++) {
                     if (!v1Entity.get("subsector_eng_" + i).isEmpty()
                             && !subcategoryRepository.existsByNameAndCategory(
-                                    v1Entity.get("subsector_eng_" + i), parentCategory)) {
+                            v1Entity.get("subsector_eng_" + i), parentCategory)) {
 
                         SubcategoryEntity newSubcategory =
                                 SubcategoryEntity.builder()
@@ -74,5 +76,11 @@ public class CategoryService {
             e.printStackTrace();
         }
         return createdSubcategories;
+    }
+
+    public List<CategoryEntity> findAllCategories() {
+        List<CategoryEntity> entities = new ArrayList<>();
+        categoryRepository.findAll().forEach(entities::add);
+        return entities;
     }
 }
