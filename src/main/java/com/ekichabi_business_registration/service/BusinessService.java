@@ -56,6 +56,7 @@ public class BusinessService {
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build();
+    private final AccountService accountService;
 
     private final Logger logger = LoggerFactory.getLogger(BusinessService.class);
 
@@ -150,10 +151,15 @@ public class BusinessService {
         return created;
     }
 
-    public BusinessEntity updateBusiness(BusinessEntity businessEntity)
+    public BusinessEntity updateBusiness(AccountEntity accountEntity, BusinessEntity businessEntity)
             throws InvalidUpdateException {
         try {
             BusinessEntity existing = businessRepository.findById(businessEntity.getId()).get();
+            if (!accountService.validateAccountOwnsBusiness(accountEntity, businessEntity)) {
+                logger.error("Attempt to update business by non-owner account");
+                throw new InvalidUpdateException();
+            }
+
             //TODO some validation checks are not necessary with update operation (eg updating a business name is not mandatory every time).
             // Figure out how to validate on patch requests
             validateBusinessEntityAndCreateChildEntities(businessEntity);
