@@ -77,8 +77,10 @@ public class BusinessService {
 
     public BusinessEntity createBusiness(BusinessEntity businessEntity)
             throws InvalidCreationException {
-        return businessRepository.save(
-                validateBusinessEntityAndCreateChildEntities(businessEntity));
+        BusinessEntity entity = validateBusinessEntityAndCreateChildEntities(businessEntity);
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
+        return businessRepository.save(entity);
     }
 
     /**
@@ -165,6 +167,7 @@ public class BusinessService {
             // business name is not mandatory every time).
             // Figure out how to validate on patch requests
             BusinessEntity persisted = validateBusinessEntityAndCreateChildEntities(businessEntity);
+            persisted.setUpdatedAt(LocalDateTime.now());
             businessRepository.save(persisted);
             return persisted;
         } catch (InvalidCreationException e) {
