@@ -32,11 +32,11 @@ public class AdminController {
 
     @Autowired
     private void setPassword(Environment environment) {
-        String password = environment.getProperty("admin-password", String.class);
-        if (password == null) {
+        String configPassword = environment.getProperty("admin-password", String.class);
+        if (configPassword == null) {
             throw new IllegalAccessError("property admin-password is not set");
         }
-        this.password = password;
+        password = configPassword;
     }
 
 
