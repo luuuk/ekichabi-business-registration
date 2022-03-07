@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -100,5 +102,25 @@ public class GeoService {
             e.printStackTrace();
         }
         return created;
+    }
+
+    public List<DistrictEntity> findAllDistricts() {
+        List<DistrictEntity> districtEntities = new ArrayList<>();
+        districtRepository.findAll().forEach(districtEntities::add);
+        return districtEntities;
+    }
+
+    public List<VillageEntity> findVillagesByDistrict(String district) {
+        List<VillageEntity> entities = new ArrayList<>();
+        villageRepository.findByDistrict(districtRepository.findByName(district))
+                .forEach(entities::add);
+        return entities;
+    }
+
+    public List<SubvillageEntity> findSubvillagesByVillage(String village) {
+        List<SubvillageEntity> entities = new ArrayList<>();
+        subvillageRepository.findByVillage(villageRepository.findByName(village))
+                .forEach(entities::add);
+        return entities;
     }
 }
