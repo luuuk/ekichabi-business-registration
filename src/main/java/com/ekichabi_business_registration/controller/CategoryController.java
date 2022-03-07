@@ -1,6 +1,7 @@
 package com.ekichabi_business_registration.controller;
 
 import com.ekichabi_business_registration.db.entity.CategoryEntity;
+import com.ekichabi_business_registration.db.entity.SubcategoryEntity;
 import com.ekichabi_business_registration.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -26,5 +28,13 @@ public class CategoryController {
         logger.info("Calling FindAllCategories()");
         List<CategoryEntity> categoryEntities = service.findAllCategories();
         return ResponseEntity.ok().body(categoryEntities);
+    }
+
+    @GetMapping("subcategories/{category}")
+    public ResponseEntity<List<SubcategoryEntity>> findSubcategoriesByCategory(
+            @PathVariable String category) {
+        logger.info("Calling FindAllSubCategoriesByCategory()");
+        List<SubcategoryEntity> entities = service.findAllSubcategoriesByCategory(category);
+        return ResponseEntity.ok().body(entities);
     }
 }
