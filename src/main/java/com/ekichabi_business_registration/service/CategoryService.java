@@ -83,4 +83,11 @@ public class CategoryService {
         categoryRepository.findAll().forEach(entities::add);
         return entities;
     }
+
+    public List<SubcategoryEntity> findAllSubcategoriesByCategory(String category) {
+        List<SubcategoryEntity> entities = new ArrayList<>();
+        subcategoryRepository.findByCategory(categoryRepository.findByName(category))
+                .forEach(entities::add);
+        return entities;
+    }
 }
