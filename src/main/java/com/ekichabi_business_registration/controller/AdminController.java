@@ -6,6 +6,8 @@ import com.ekichabi_business_registration.service.GeoService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,11 +24,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Transactional
 public class AdminController {
-    private static final String PASSWORD = "supersecretpassword";
     private final Logger logger = LoggerFactory.getLogger(BusinessController.class);
     private final CategoryService categoryService;
     private final GeoService geoService;
     private final BusinessService businessService;
+    private String password;
+
+    @Autowired
+    private void setPassword(Environment environment) {
+        String password = environment.getProperty("admin-password", String.class);
+        if (password == null) {
+            throw new IllegalAccessError("property admin-password is not set");
+        }
+        this.password = password;
+    }
+
 
     /**
      * Creates categories based on the contents of census_full.csv
@@ -34,7 +46,7 @@ public class AdminController {
      **/
     @PostMapping("categories/{auth}")
     public ResponseEntity<?> createCategories(@PathVariable String auth) {
-        if (!auth.equals(PASSWORD)) {
+        if (!auth.equals(password)) {
             return ResponseEntity.badRequest()
                     .body("Admin user not authenticated");
         }
@@ -54,7 +66,7 @@ public class AdminController {
      **/
     @PostMapping("subcategories/{auth}")
     public ResponseEntity<?> createSubcategories(@PathVariable String auth) {
-        if (!auth.equals(PASSWORD)) {
+        if (!auth.equals(password)) {
             return ResponseEntity.badRequest()
                     .body("Admin user not authenticated");
         }
@@ -74,7 +86,7 @@ public class AdminController {
      **/
     @PostMapping("districts/{auth}")
     public ResponseEntity<?> createDistricts(@PathVariable String auth) {
-        if (!auth.equals(PASSWORD)) {
+        if (!auth.equals(password)) {
             return ResponseEntity.badRequest()
                     .body("Admin user not authenticated");
         }
@@ -94,7 +106,7 @@ public class AdminController {
      **/
     @PostMapping("villages/{auth}")
     public ResponseEntity<?> createVillages(@PathVariable String auth) {
-        if (!auth.equals(PASSWORD)) {
+        if (!auth.equals(password)) {
             return ResponseEntity.badRequest()
                     .body("Admin user not authenticated");
         }
@@ -114,7 +126,7 @@ public class AdminController {
      **/
     @PostMapping("subvillages/{auth}")
     public ResponseEntity<?> createSubvillages(@PathVariable String auth) {
-        if (!auth.equals(PASSWORD)) {
+        if (!auth.equals(password)) {
             return ResponseEntity.badRequest()
                     .body("Admin user not authenticated");
         }
@@ -134,7 +146,7 @@ public class AdminController {
      **/
     @PostMapping("businesses/{auth}")
     public ResponseEntity<?> createBusinesses(@PathVariable String auth) {
-        if (!auth.equals(PASSWORD)) {
+        if (!auth.equals(password)) {
             return ResponseEntity.badRequest()
                     .body("Admin user not authenticated");
         }
@@ -154,7 +166,7 @@ public class AdminController {
      **/
     @PostMapping("seed-from-census/{auth}")
     public ResponseEntity<?> createFromCensus(@PathVariable String auth) {
-        if (!auth.equals(PASSWORD)) {
+        if (!auth.equals(password)) {
             return ResponseEntity.badRequest()
                     .body("Admin user not authenticated");
         }
