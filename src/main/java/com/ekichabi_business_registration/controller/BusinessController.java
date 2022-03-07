@@ -1,6 +1,5 @@
 package com.ekichabi_business_registration.controller;
 
-import com.ekichabi_business_registration.db.entity.AccountEntity;
 import com.ekichabi_business_registration.db.entity.BusinessEntity;
 import com.ekichabi_business_registration.service.BusinessService;
 import com.ekichabi_business_registration.util.exceptions.InvalidCreationException;
@@ -67,11 +66,12 @@ public class BusinessController {
         return ResponseEntity.ok().body(businessEntities);
     }
 
-    @PatchMapping("business")
-    public ResponseEntity<?> updateBusiness(@RequestBody AccountEntity accountEntity, @RequestBody BusinessEntity businessEntity){
-        logger.info("Updating business " + businessEntity.toString());
+    @PatchMapping("business/{id}")
+    public ResponseEntity<?> updateBusiness(@PathVariable Long id,
+                                            @RequestBody BusinessEntity business) {
+        logger.info("Updating business " + business.toString());
         try {
-            BusinessEntity updated = service.updateBusiness(accountEntity, businessEntity);
+            BusinessEntity updated = service.updateBusiness(id, business);
             return ResponseEntity.ok().body(updated);
         } catch (InvalidUpdateException e) {
             return ResponseEntity.badRequest()

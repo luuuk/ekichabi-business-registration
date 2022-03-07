@@ -151,20 +151,22 @@ public class BusinessService {
         return created;
     }
 
-    public BusinessEntity updateBusiness(AccountEntity accountEntity, BusinessEntity businessEntity)
+    public BusinessEntity updateBusiness(Long id, BusinessEntity businessEntity)
             throws InvalidUpdateException {
         try {
-            BusinessEntity existing = businessRepository.findById(businessEntity.getId()).get();
-            if (!accountService.validateAccountOwnsBusiness(accountEntity, businessEntity)) {
-                logger.error("Attempt to update business by non-owner account");
+            if (!accountService.validateAccountOwnsBusiness(id, businessEntity)) {
+                logger.error(
+                        "Attempt to update business by non-owner account or "
+                                + "incorrectly logged in account");
                 throw new InvalidUpdateException();
             }
 
-            //TODO some validation checks are not necessary with update operation (eg updating a business name is not mandatory every time).
+            //TODO some validation checks are not necessary with update operation (eg updating a
+            // business name is not mandatory every time).
             // Figure out how to validate on patch requests
-            validateBusinessEntityAndCreateChildEntities(businessEntity);
-            businessRepository.save(existing);
-            return existing;
+            BusinessEntity persisted = validateBusinessEntityAndCreateChildEntities(businessEntity);
+            businessRepository.save(persisted);
+            return persisted;
         } catch (InvalidCreationException e) {
             throw new InvalidUpdateException();
         }
@@ -200,6 +202,7 @@ public class BusinessService {
         }
 
         // If business has no district, throw exception
+        //TODO validate that subvillage and village are not null (otherwise NPE)
         if (businessEntity.getSubvillage().getVillage().getDistrict() == null) {
             logger.error("Business has no district");
             throw new InvalidCreationException();
