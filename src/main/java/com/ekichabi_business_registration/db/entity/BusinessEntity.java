@@ -81,7 +81,7 @@ public class BusinessEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany()
     @JoinTable(name = "BUSINESS_ACCOUNT",
             joinColumns = @JoinColumn(name = "BUSINESS_ID", referencedColumnName = "ID"),
             inverseJoinColumns = @JoinColumn(name = "ACCOUNT_ID", referencedColumnName = "ID"))
