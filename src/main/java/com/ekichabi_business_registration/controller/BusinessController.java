@@ -67,7 +67,8 @@ public class BusinessController {
     }
 
     /**
-     * Update a business. Will fail if called with owners.size != 1. Need to devise a new mechanism for updating business owners.
+     * Update a business. Will fail if called with owners.size != 1.
+     * TODO Need to devise a new mechanism for updating business owners.
      *
      * @param id       id of the business to update
      * @param business updates to given business

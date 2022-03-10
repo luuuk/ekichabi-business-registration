@@ -355,7 +355,8 @@ public class BusinessService {
 
         // If business has a subcategory not associated with its category,
         // write new subcategory to db.
-        // This is an append operation - it is not possible to remove a subcategory from a business via patch
+        // This is an append operation - it is not possible to remove
+        // a subcategory from a business via patch
         for (SubcategoryEntity subcategory : businessEntity.getSubcategories()) {
             if (!subcategoryRepository.existsByNameAndCategory(subcategory.getName(),
                     subcategory.getCategory())) {
