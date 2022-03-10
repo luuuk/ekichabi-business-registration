@@ -66,6 +66,13 @@ public class BusinessController {
         return ResponseEntity.ok().body(businessEntities);
     }
 
+    /**
+     * Update a business. Will fail if called with owners.size != 1. Need to devise a new mechanism for updating business owners.
+     *
+     * @param id       id of the business to update
+     * @param business updates to given business
+     * @return business if successful, otherwise bad request
+     */
     @PatchMapping("business/{id}")
     public ResponseEntity<?> updateBusiness(@PathVariable Long id,
                                             @RequestBody BusinessEntity business) {

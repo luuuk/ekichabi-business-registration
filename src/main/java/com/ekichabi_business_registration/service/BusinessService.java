@@ -29,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.ekichabi_business_registration.service.CategoryService.SUBSECTOR_V1_COUNT;
 
@@ -153,28 +154,6 @@ public class BusinessService {
         return created;
     }
 
-    public BusinessEntity updateBusiness(Long id, BusinessEntity businessEntity)
-            throws InvalidUpdateException {
-        try {
-            if (!accountService.validateAccountOwnsBusiness(id, businessEntity)) {
-                logger.error(
-                        "Attempt to update business by non-owner account or "
-                                + "incorrectly logged in account");
-                throw new InvalidUpdateException();
-            }
-
-            //TODO some validation checks are not necessary with update operation (eg updating a
-            // business name is not mandatory every time).
-            // Figure out how to validate on patch requests
-            BusinessEntity persisted = validateBusinessEntityAndCreateChildEntities(businessEntity);
-            persisted.setUpdatedAt(LocalDateTime.now());
-            businessRepository.save(persisted);
-            return persisted;
-        } catch (InvalidCreationException e) {
-            throw new InvalidUpdateException();
-        }
-    }
-
     private BusinessEntity validateBusinessEntityAndCreateChildEntities(
             BusinessEntity businessEntity) throws InvalidCreationException {
         // If business has no name throw exception
@@ -280,6 +259,154 @@ public class BusinessService {
 //                throw new InvalidCreationException();
 //            }
 //        }
+
+        // If business coordinates are not of right format, throw exception
+        if (businessEntity.getCoordinates() != null
+                && !businessEntity.getCoordinates().matches(COORDINATE_REGEX)) {
+            logger.error("Business coordinates do not match expected format");
+            throw new InvalidCreationException();
+        }
+
+        return businessEntity;
+    }
+
+    public BusinessEntity updateBusiness(Long id, BusinessEntity businessEntity)
+            throws InvalidUpdateException {
+        try {
+            if (!accountService.validateAccountOwnsBusiness(id, businessEntity)) {
+                logger.error(
+                        "Attempt to update business by non-owner account or "
+                                + "incorrectly logged in account");
+                throw new InvalidUpdateException();
+            }
+
+            Optional<BusinessEntity> existingBusinessEntityToUpdate =
+                    businessRepository.findById(id);
+            if (existingBusinessEntityToUpdate.isEmpty()) {
+                logger.error(
+                        "Attempt to non-existent business");
+                throw new InvalidUpdateException();
+            }
+
+            BusinessEntity validBusinessUpdateEntity =
+                    validateBusinessEntityAndCreateChildEntitiesOnUpdate(businessEntity);
+
+            return updateExistingBusinessEntity(existingBusinessEntityToUpdate.get(),
+                    validBusinessUpdateEntity);
+
+        } catch (InvalidCreationException e) {
+            throw new InvalidUpdateException();
+        }
+    }
+
+    // Takes a persisted business from the DB and a delta business from API request body,
+    // applies changes from delta requested business, and saves new business
+    private BusinessEntity updateExistingBusinessEntity(
+            BusinessEntity existingBusinessEntityToUpdate,
+            BusinessEntity validBusinessUpdateEntity) {
+
+        if (validBusinessUpdateEntity.getName() != null) {
+            existingBusinessEntityToUpdate.setName(validBusinessUpdateEntity.getName());
+        }
+
+        if (validBusinessUpdateEntity.getCategory() != null) {
+            existingBusinessEntityToUpdate.setCategory(validBusinessUpdateEntity.getCategory());
+        }
+
+        if (validBusinessUpdateEntity.getSubcategories() != null) {
+            existingBusinessEntityToUpdate.getSubcategories()
+                    .addAll(validBusinessUpdateEntity.getSubcategories());
+        }
+
+        if (validBusinessUpdateEntity.getPhoneNumbers() != null) {
+            existingBusinessEntityToUpdate.getPhoneNumbers()
+                    .addAll(validBusinessUpdateEntity.getPhoneNumbers());
+            //TODO remove duplicates from phone numbers list
+        }
+
+        if (validBusinessUpdateEntity.getCoordinates() != null) {
+            existingBusinessEntityToUpdate.setCoordinates(
+                    validBusinessUpdateEntity.getCoordinates());
+        }
+
+        if (validBusinessUpdateEntity.getSubvillage() != null) {
+            existingBusinessEntityToUpdate.setSubvillage(validBusinessUpdateEntity.getSubvillage());
+        }
+
+        existingBusinessEntityToUpdate.setUpdatedAt(LocalDateTime.now());
+        businessRepository.save(existingBusinessEntityToUpdate);
+        return existingBusinessEntityToUpdate;
+    }
+
+    // Takes a delta business entity, validates populated fields against DB,
+    // and builds relations from delta business entity to existing DB entities
+    private BusinessEntity validateBusinessEntityAndCreateChildEntitiesOnUpdate(
+            BusinessEntity businessEntity) throws InvalidCreationException {
+        // If business has a category not in the DB, throw exception
+        if (businessEntity.getCategory() != null) {
+            if (!categoryRepository.existsByName(businessEntity.getCategory().getName())) {
+                logger.error("Business has a category not in the DB");
+                throw new InvalidCreationException();
+            } else {
+                businessEntity.setCategory(
+                        categoryRepository.findByName(businessEntity.getCategory().getName()));
+            }
+        }
+
+        // If business has a subcategory not associated with its category,
+        // write new subcategory to db.
+        // This is an append operation - it is not possible to remove a subcategory from a business via patch
+        for (SubcategoryEntity subcategory : businessEntity.getSubcategories()) {
+            if (!subcategoryRepository.existsByNameAndCategory(subcategory.getName(),
+                    subcategory.getCategory())) {
+                logger.info("Writing new subcategory to DB for Category");
+                subcategory.setCategory(
+                        categoryRepository.findByName(businessEntity.getCategory().getName()));
+                subcategoryRepository.save(subcategory);
+            }
+        }
+
+        // If district not yet in DB, throw exception
+        if (businessEntity.getSubvillage() != null
+                && businessEntity.getSubvillage().getVillage() != null
+                && businessEntity.getSubvillage().getVillage().getDistrict() != null
+                && !districtRepository.existsByName(
+                businessEntity.getSubvillage().getVillage().getDistrict().getName())) {
+            logger.error("District not in DB");
+            throw new InvalidCreationException();
+        }
+
+        // Find existing district in DB and set business to point to that entity
+        DistrictEntity existingBusinessDistrict = districtRepository.findByName(
+                businessEntity.getSubvillage().getVillage().getDistrict().getName());
+        businessEntity.getSubvillage().getVillage().setDistrict(existingBusinessDistrict);
+
+        // If village not yet in DB, add mapping to district
+        if (businessEntity.getSubvillage().getVillage() != null
+                && !villageRepository.existsByNameAndDistrict(
+                businessEntity.getSubvillage().getVillage().getName(), existingBusinessDistrict)) {
+            logger.info("Writing new village to DB for district");
+            businessEntity.getSubvillage().getVillage().setDistrict(existingBusinessDistrict);
+            villageRepository.save(businessEntity.getSubvillage().getVillage());
+        }
+
+        // Find existing village in DB and set business to point to that entity
+        VillageEntity existingBusinessVillage = villageRepository.findByNameAndDistrict(
+                businessEntity.getSubvillage().getVillage().getName(), existingBusinessDistrict);
+        businessEntity.getSubvillage().setVillage(existingBusinessVillage);
+
+        // If subvillage not yet in DB, add mapping to village
+        if (!subvillageRepository.existsByNameAndVillage(businessEntity.getSubvillage().getName(),
+                existingBusinessVillage)) {
+            logger.info("Writing new subvillage to DB for village");
+            businessEntity.getSubvillage().setVillage(existingBusinessVillage);
+            subvillageRepository.save(businessEntity.getSubvillage());
+        }
+
+        SubvillageEntity existingBusinessSubvillage =
+                subvillageRepository.findByNameAndVillage(businessEntity.getSubvillage().getName(),
+                        existingBusinessVillage);
+        businessEntity.setSubvillage(existingBusinessSubvillage);
 
         // If business coordinates are not of right format, throw exception
         if (businessEntity.getCoordinates() != null
