@@ -66,6 +66,14 @@ public class BusinessController {
         return ResponseEntity.ok().body(businessEntities);
     }
 
+    @GetMapping("businessesByUpdatedAt/{timestamp}")
+    public ResponseEntity<List<BusinessEntity>> findAllByUpdatedAt(
+            @PathVariable String timestamp) {
+        logger.info("Calling findAllBusinessByUpdatedAt()");
+        List<BusinessEntity> businessEntities = service.findAllBusinessByUpdatedAt(timestamp);
+        return ResponseEntity.ok().body(businessEntities);
+    }
+
     /**
      * Update a business. Will fail if called with owners.size != 1.
      * TODO Need to devise a new mechanism for updating business owners.

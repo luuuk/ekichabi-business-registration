@@ -25,8 +25,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -417,5 +419,15 @@ public class BusinessService {
         }
 
         return businessEntity;
+    }
+
+    public List<BusinessEntity> findAllBusinessByUpdatedAt(String timestamp) {
+        try {
+            return businessRepository.findBusinessEntitiesByUpdatedAtAfter(
+                    LocalDateTime.parse(timestamp));
+        } catch (DateTimeException e) {
+            logger.error("Invalid timestamp in request");
+            return Collections.emptyList();
+        }
     }
 }
