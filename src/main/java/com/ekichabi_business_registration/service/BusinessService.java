@@ -246,10 +246,13 @@ public class BusinessService {
         for (AccountEntity owner : businessEntity.getOwners()) {
             AccountEntity existingAccount = accountRepository.findByName(owner.getName());
 
-            // If owner already exists in DB use it, otherwise use JPA persist to make a new owner
+            // If owner already exists in DB use it, otherwise throw exception
             if (existingAccount != null) {
                 businessEntity.getOwners().remove(owner);
                 businessEntity.getOwners().add(existingAccount);
+            } else {
+                logger.error("Attempt to create business with owner not in DB");
+                throw new InvalidCreationException();
             }
         }
 
