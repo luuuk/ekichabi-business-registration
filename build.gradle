@@ -27,7 +27,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.4'
     implementation 'org.postgresql:postgresql:42.3.1'
     implementation 'org.springframework.boot:spring-boot-starter-validation:2.6.2'
-    implementation 'org.flywaydb:flyway-core:8.4.2'
+    implementation 'org.flywaydb:flyway-core:8.5.5'
     implementation 'com.opencsv:opencsv:5.6'
 }
 
